@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -20,11 +20,11 @@ import packagejs from '../../package.json';
 import Pagination from '@material-ui/lab/Pagination';
 import { paginate, pages, changePage, useParams } from '../common';
 import { useHistory } from 'react-router-dom';
-import {
-  ShoppingCart,
-  Favorite,
-  Pageview
-} from '@material-ui/icons';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
+import { useAuth0 } from "@auth0/auth0-react";
+import { ShoppingCart, Favorite, Pageview } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,13 +43,73 @@ const useStyles = makeStyles((theme) => ({
     padding: 10
   },
   margin: {
-    marginLeft: theme.spacing(3),
     color: "white"
   },
   pagination: {
     padding: theme.spacing(1),
   },
 }));
+
+const LoginButton = () => {
+  const { loginWithRedirect } = useAuth0();
+  return <Button onClick={() => loginWithRedirect()} color="inherit">Login</Button>;
+};
+
+const LogoutButton = () => {
+  const { user, logout } = useAuth0();
+  const { picture, name } = user;
+
+  return (
+    <IconButton onClick={() => logout({ returnTo: window.location.origin })} >
+      <Avatar alt={name} src={picture} />
+    </IconButton>
+  );
+};
+
+const CartButton = props => {
+  const { cart_results } = props;
+
+  return (
+    <IconButton>
+      <Badge badgeContent={cart_results.length} color="secondary" max={99999} style={{ color: "white" }} component={Link} to="/cart">
+        <ShoppingCart />
+      </Badge>
+    </IconButton>
+  )
+}
+
+const FavoriteButton = () => {
+  return (
+    <IconButton style={{ color: "white" }} component={Link} to="/wishlist">
+      <Favorite />
+    </IconButton>
+  )
+}
+
+const SearchButton = () => {
+  return (
+    <IconButton style={{ color: "white" }} component={Link} to="/search">
+      <Pageview />
+    </IconButton>
+  )
+}
+
+const Bar = props => {
+  const { matches, breadcrumbs, isAuthenticated, cart_results } = props;
+
+  return (
+    <Toolbar>
+      { breadcrumbs && <Breadcrumbs />}
+      { matches && <Fragment>
+        <SearchInput />
+        <SearchButton />
+        <FavoriteButton />
+        <CartButton cart_results={cart_results} />
+        { isAuthenticated ? <LogoutButton /> : <LoginButton />}
+      </Fragment>}
+    </Toolbar>
+  )
+}
 
 const Nothing = props => (
   <Grid container alignContent="center" alignItems="center" direction="column">
@@ -62,14 +122,15 @@ const Nothing = props => (
 export default props => {
   const classes = useStyles();
   const matches = useMediaQuery(theme => theme.breakpoints.up('md'));
-  const { stores, cart_results, search_results, spinner, date } = useSelector(state => state.pricesReducer)
+  const { stores, cart_results, spinner, date } = useSelector(state => state.pricesReducer)
   const { store_filtered, stock_filtered, child_data, page_name, component, pre_component, paging=true } = props;
   const store_ids = [...new Set(stock_filtered.map(d => d.store_id))]
   const current_stores = stores.filter(d => store_ids.includes(d.id));
   const page_size = props.page_size || 12;
   const history = useHistory();
   const { page } = useParams();
-  const page_data = paginate(child_data, page_size, page, paging)
+  const page_data = paginate(child_data, page_size, page, paging);
+  const { isAuthenticated } = useAuth0();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -78,25 +139,7 @@ export default props => {
   return (
     <Grid container className={classes.root} alignContent="center" alignItems="center">
       <AppBar position="static" className={classes.appbar}>
-        <Toolbar>
-          <Breadcrumbs className={classes.title} />
-          { matches && <SearchInput className={classes.margin} /> }
-          { matches && <Badge className={classes.margin} badgeContent={search_results.length} color="secondary" max={99999}>
-            <Link to={"/search"} style={{ color: "white" }}>
-              <Pageview />
-            </Link>
-          </Badge>}
-          { matches && <Badge className={classes.margin} color="secondary" max={99999}>
-            <Link to={"/wishlist"} style={{ color: "white" }}>
-              <Favorite />
-            </Link>
-          </Badge>}
-          { matches && <Badge className={classes.margin} badgeContent={cart_results.length} color="secondary" max={99999}>
-            <Link to={"/cart"} style={{ color: "white" }}>
-              <ShoppingCart />
-            </Link>
-          </Badge>}
-        </Toolbar>
+        <Bar breadcrumbs={true} matches={matches} isAuthenticated={isAuthenticated} cart_results={cart_results} />
       </AppBar>
 
       <Container maxWidth="lg">
@@ -128,25 +171,8 @@ export default props => {
         </Grid>
       </Container>
 
-      { !matches && <AppBar position="fixed" className={classes.bottomBar}>
-        <Toolbar>
-          <SearchInput />
-          <Badge className={classes.margin} badgeContent={search_results.length} color="secondary" max={99999}>
-            <Link to={"/search"} style={{ color: "white" }}>
-              <Pageview />
-            </Link>
-          </Badge>
-          <Badge className={classes.margin} color="secondary" max={99999}>
-            <Link to={"/wishlist"} style={{ color: "white" }}>
-              <Favorite />
-            </Link>
-          </Badge>
-          <Badge className={classes.margin} badgeContent={cart_results.length} color="secondary" max={99999}>
-            <Link to={"/cart"} style={{ color: "white" }}>
-              <ShoppingCart />
-            </Link>
-          </Badge>
-        </Toolbar>
+      {!matches && <AppBar position="fixed" className={classes.bottomBar}>
+        <Bar breadcrumbs={false} matches={!matches} isAuthenticated={isAuthenticated} cart_results={cart_results} />
       </AppBar>}
 
       <Grid item xs={12}>

@@ -9,6 +9,7 @@ import { reducer as pricesReducer } from './reducers/prices';
 import App from './App';
 import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import { Auth0Provider } from "@auth0/auth0-react";
 
 const rootReducer = combineReducers({
   pricesReducer,
@@ -41,7 +42,9 @@ ReactDOM.render(
     <HashRouter>
       <Provider store={store}>
         <Route path="/">
-          <App />
+          <Auth0Provider domain="dev-11hy0hqn.us.auth0.com" clientId="gEd77V5i5uBswawxfycFKL1eEv8BlhdE" redirectUri={window.location.origin}>
+            <App />
+          </Auth0Provider>
         </Route>
       </Provider>
     </HashRouter>

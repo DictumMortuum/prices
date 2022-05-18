@@ -16,6 +16,11 @@ export const reducer = (state = {}, action) => {
         stores: [],
         spinner: true,
         date: new Date(),
+        user: {
+          isAuthenticated: false,
+          details: {},
+          saved: true,
+        },
       }
     case "prices/fulfilled": {
       return {
@@ -77,6 +82,14 @@ export const reducer = (state = {}, action) => {
       return {
         ...state,
         spinner: !state.spinner
+      }
+    case "SET_USER":
+      return {
+        ...state,
+        user: {
+          ...action.payload,
+          saved: true,
+        }
       }
     default:
       return state;

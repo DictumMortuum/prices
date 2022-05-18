@@ -1,6 +1,7 @@
 export const base = 'https://raw.githubusercontent.com/DictumMortuum/json-api/master'
 export const bgg_xmlapi = 'https://boardgamegeek.com/xmlapi'
 export const bgg_xmlapi2 = 'https://api.geekdo.com/xmlapi2'
+export const deta = 'https://szb34l.deta.dev'
 
 export const forceError = res => {
   if (res.status === 202) {

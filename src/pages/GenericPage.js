@@ -23,8 +23,8 @@ import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
-import { useAuth0 } from "@auth0/auth0-react";
 import { ShoppingCart, Favorite, Pageview } from '@material-ui/icons';
+import { useLogin } from '../hooks/useLogin';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,13 +50,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoginButton = () => {
-  const { loginWithRedirect } = useAuth0();
+const LoginButton = props => {
+  const { loginWithRedirect } = props;
   return <Button onClick={() => loginWithRedirect()} color="inherit">Login</Button>;
 };
 
-const LogoutButton = () => {
-  const { user, logout } = useAuth0();
+const LogoutButton = props => {
+  const { user, logout } = props;
   const { picture, name } = user;
 
   return (
@@ -95,7 +95,7 @@ const SearchButton = () => {
 }
 
 const Bar = props => {
-  const { matches, breadcrumbs, isAuthenticated, cart_results } = props;
+  const { matches, breadcrumbs, isAuthenticated, cart_results, loginWithRedirect, logout, user } = props;
 
   return (
     <Toolbar>
@@ -105,7 +105,7 @@ const Bar = props => {
         <SearchButton />
         <FavoriteButton />
         <CartButton cart_results={cart_results} />
-        { isAuthenticated ? <LogoutButton /> : <LoginButton />}
+        { isAuthenticated ? <LogoutButton logout={logout} user={user} /> : <LoginButton loginWithRedirect={loginWithRedirect} />}
       </Fragment>}
     </Toolbar>
   )
@@ -130,7 +130,7 @@ export default props => {
   const history = useHistory();
   const { page } = useParams();
   const page_data = paginate(child_data, page_size, page, paging);
-  const { isAuthenticated } = useAuth0();
+  const { loginWithRedirect, logout, isAuthenticated, user } = useLogin();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -139,7 +139,7 @@ export default props => {
   return (
     <Grid container className={classes.root} alignContent="center" alignItems="center">
       <AppBar position="static" className={classes.appbar}>
-        <Bar breadcrumbs={true} matches={matches} isAuthenticated={isAuthenticated} cart_results={cart_results} />
+        <Bar user={user} breadcrumbs={true} matches={matches} isAuthenticated={isAuthenticated} cart_results={cart_results} loginWithRedirect={loginWithRedirect} logout={logout} />
       </AppBar>
 
       <Container maxWidth="lg">
@@ -172,7 +172,7 @@ export default props => {
       </Container>
 
       {!matches && <AppBar position="fixed" className={classes.bottomBar}>
-        <Bar breadcrumbs={false} matches={!matches} isAuthenticated={isAuthenticated} cart_results={cart_results} />
+        <Bar user={user} breadcrumbs={false} matches={!matches} isAuthenticated={isAuthenticated} cart_results={cart_results} loginWithRedirect={loginWithRedirect} logout={logout} />
       </AppBar>}
 
       <Grid item xs={12}>

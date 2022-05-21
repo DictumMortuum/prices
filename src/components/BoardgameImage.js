@@ -14,6 +14,7 @@ export default props => {
       }
     }
 
+    image.onerror = () => { setI(i+1) }
     image.onload = checkValid;
     image.src = srcs[i];
   }, [srcs]);

@@ -188,7 +188,7 @@ export default props => {
       </AppBar>
 
       <Container maxWidth="xl">
-        <Grid container spacing={4} component={MainPaper}>
+        <Grid container spacing={4} component={MainPaper} className={classes.content}>
           <Grid item md={2} xs={12} component="div">
             <Controls current_stores={current_stores} />
           </Grid>

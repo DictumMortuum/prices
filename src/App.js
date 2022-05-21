@@ -7,19 +7,19 @@ import CartPage from './pages/CartPage';
 import SearchPage from './pages/SearchPage';
 import GeeklistPage from './pages/GeeklistPage';
 import WishlistPage from './pages/WishlistPage';
+import ComparePage from './pages/ComparePage';
 import { fetchAllPrices } from './api/prices';
 import { fetchStores } from './api/stores';
 import { fetchDate } from './api/date';
 
-
 export default () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchAllPrices())
     dispatch(fetchStores())
     dispatch(fetchDate())
-  }, [])
+  }, []);
 
   return (
     <Switch >
@@ -43,6 +43,9 @@ export default () => {
       </Route>
       <Route path={`/item/:boardgame_id`}>
         <BoardgamePage />
+      </Route>
+      <Route path={`/compare`}>
+        <ComparePage />
       </Route>
     </Switch>
   )

@@ -35,7 +35,7 @@ export default props => {
   }
 
   return (
-    <Card key={id}>
+    <Card key={id} square={true} elevation={3}>
       <Link to={"/item/" + boardgame_id}>
         <BoardgameImage srcs={[`https://raw.githubusercontent.com/DictumMortuum/json-api/master/rest/v1/boardgames/${boardgame_id}/image.avif`, ...images]} />
       </Link>

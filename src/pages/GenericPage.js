@@ -23,7 +23,7 @@ import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
-import { ShoppingCart, Favorite, Pageview } from '@material-ui/icons';
+import { ShoppingCart, Favorite, Pageview, Compare } from '@material-ui/icons';
 import { useLogin } from '../hooks/useLogin';
 
 const useStyles = makeStyles((theme) => ({
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "sans",
   },
   appbar: {
-    marginBottom: 5
+    marginBottom: theme.spacing(4),
   },
   bottomBar: {
     top: 'auto',
@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
 }));
+
+const MainPaper = props => (
+  <Paper variant="outlined" square {...props} />
+)
 
 const LoginButton = props => {
   const { loginWithRedirect } = props;
@@ -94,6 +98,14 @@ const SearchButton = () => {
   )
 }
 
+const CompareButton = () => {
+  return (
+    <IconButton style={{ color: "white" }} component={Link} to="/compare">
+      <Compare />
+    </IconButton>
+  )
+}
+
 const Bar = props => {
   const { matches, breadcrumbs, isAuthenticated, cart_results, loginWithRedirect, logout, user } = props;
 
@@ -104,6 +116,7 @@ const Bar = props => {
         <SearchInput />
         <SearchButton />
         <FavoriteButton />
+        { false && <CompareButton />}
         <CartButton cart_results={cart_results} />
         { isAuthenticated ? <LogoutButton logout={logout} user={user} /> : <LoginButton loginWithRedirect={loginWithRedirect} />}
       </Fragment>}
@@ -118,6 +131,38 @@ const Nothing = props => (
     </Grid>
   </Grid>
 )
+
+const Controls = props => {
+  const { current_stores } = props;
+
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <StoreDropdown stores={current_stores} />
+      </Grid>
+      <Grid item xs={12}>
+        <StockDropdown />
+      </Grid>
+    </Grid>
+  );
+}
+
+const Main = props => {
+  const { child_data, page_size, paging, page, page_name, history, pre_component, store_filtered, component, page_data, spinner } = props;
+
+  return (
+    <Grid container spacing={2}>
+      {child_data.length > page_size && paging && <Grid item xs={12}>
+        <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={changePage(page_name, history)} />
+      </Grid>}
+      {pre_component !== undefined && pre_component}
+      {store_filtered.length > 0 ? component(page_data) : <Nothing spinner={spinner} />}
+      {child_data.length > page_size && paging && <Grid item xs={12}>
+        <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={changePage(page_name, history)} />
+      </Grid>}
+    </Grid>
+  );
+}
 
 export default props => {
   const classes = useStyles();
@@ -142,31 +187,26 @@ export default props => {
         <Bar user={user} breadcrumbs={true} matches={matches} isAuthenticated={isAuthenticated} cart_results={cart_results} loginWithRedirect={loginWithRedirect} logout={logout} />
       </AppBar>
 
-      <Container maxWidth="lg">
-        <Grid item xs={12} className={classes.content}>
-          <Grid container spacing={2} alignContent="center" alignItems="center">
-            <Grid item xs={6}>
-              <StoreDropdown stores={current_stores} />
-            </Grid>
-            <Grid item xs={6}>
-              <StockDropdown />
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container spacing={2}>
-                {child_data.length > page_size && paging && <Grid item xs={12}>
-                  <Paper className={classes.pagination}>
-                    <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={changePage(page_name, history)} />
-                  </Paper>
-                </Grid>}
-                {pre_component !== undefined && pre_component}
-                {store_filtered.length > 0 ? component(page_data) : <Nothing spinner={spinner} />}
-                {child_data.length > page_size && paging && <Grid item xs={12}>
-                  <Paper className={classes.pagination}>
-                    <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={changePage(page_name, history)} />
-                  </Paper>
-                </Grid>}
-              </Grid>
-            </Grid>
+      <Container maxWidth="xl">
+        <Grid container spacing={4} component={MainPaper}>
+          <Grid item md={2} xs={12} component="div">
+            <Controls current_stores={current_stores} />
+          </Grid>
+
+          <Grid item md={10} xs={12} component="div">
+            <Main
+              child_data={child_data}
+              page_size={page_size}
+              paging={paging}
+              page={page}
+              page_name={page_name}
+              history={history}
+              pre_component={pre_component}
+              store_filtered={store_filtered}
+              spinner={spinner}
+              page_data={page_data}
+              component={component}
+            />
           </Grid>
         </Grid>
       </Container>

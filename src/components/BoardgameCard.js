@@ -40,9 +40,9 @@ export default props => {
         <BoardgameImage srcs={[`https://raw.githubusercontent.com/DictumMortuum/json-api/master/rest/v1/boardgames/${boardgame_id}/image.avif`, ...images]} />
       </Link>
       <CardContent className={classes.card_header}>
-        <Typography variant="subtitle1" color="textSecondary">
+        {rank < 999999 && <Typography variant="subtitle1" color="textSecondary">
           BGG Rank {rank}
-        </Typography>
+        </Typography>}
         <Typography variant="subtitle1" color="textSecondary">
           {lowest && "€" + lowest.price} {highest && "- €" + highest.price}
         </Typography>

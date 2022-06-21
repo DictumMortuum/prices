@@ -8,18 +8,22 @@ export const pricesToGroups = data => {
   const rs = [];
 
   data.map(d => {
-    if (rs[d.rank-1] === undefined) {
-      rs[d.rank-1] = {
+    if (rs[d.boardgame_id] === undefined) {
+      rs[d.boardgame_id] = {
         ...d,
         items: []
       }
+
+      if (rs[d.boardgame_id].rank === undefined) {
+        rs[d.boardgame_id].rank = 999999;
+      }
     }
 
-    rs[d.rank-1].items.push(d)
+    rs[d.boardgame_id].items.push(d)
     return d
   })
 
-  return rs.filter(d => d.items.length > 0)
+  return rs.filter(d => d.items.length > 0).sort((a, b) => a.rank > b.rank)
 }
 
 export default () => {

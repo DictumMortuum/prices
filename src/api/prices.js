@@ -3,11 +3,18 @@ import * as fflate from 'fflate';
 import { base } from "./common";
 
 export const fetchAllPrices = createAsyncThunk('prices', async () => {
-  const compressed = new Uint8Array(
-    await fetch(base + '/rest/v1/prices.json.gz').then(res => res.arrayBuffer())
-  );
+  const pull = localStorage.getItem('pull');
+  let origText = localStorage.getItem('prices');
 
-  const decompressed = fflate.decompressSync(compressed);
-  const origText = fflate.strFromU8(decompressed);
-  return JSON.parse(origText);
-})
+  if (pull === 'true' || pull === null || origText == null) {
+    const buffer = await fetch(base + '/rest/v1/prices.json.gz').then(res => res.arrayBuffer());
+    const compressed = new Uint8Array(buffer);
+    const decompressed = fflate.decompressSync(compressed);
+    origText = fflate.strFromU8(decompressed);
+
+    localStorage.setItem('prices', origText);
+    localStorage.setItem('pull', 'false');
+  }
+
+  return JSON.parse(origText || []);
+});

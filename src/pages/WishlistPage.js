@@ -116,7 +116,7 @@ const StoresList = props => {
         </Typography>
       </Grid>
       {items.sort((a, b) => a.boardgame_id - b.boardgame_id).map(d => (
-        <Grid key={d.id} item xs={1}>
+        <Grid key={d.id} item xs={6} md={3} lg={1}>
           <CompareCard {...d} wishlist={wishlist} />
         </Grid>
       ))}

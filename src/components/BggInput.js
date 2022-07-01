@@ -64,6 +64,7 @@ const Component = props => {
       <OutlinedInput
         style={{ paddingRight: 0 }}
         id="bgg-input"
+        value={wishlist_term}
         onChange={onChange(dispatch)}
         onKeyPress={e => {
           if(e.key === 'Enter') {

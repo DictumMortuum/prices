@@ -133,7 +133,7 @@ const Nothing = props => (
 )
 
 const Controls = props => {
-  const { current_stores } = props;
+  const { current_stores, additional_controls } = props;
 
   return (
     <Grid container spacing={2}>
@@ -143,6 +143,7 @@ const Controls = props => {
       <Grid item xs={12}>
         <StockDropdown />
       </Grid>
+      { additional_controls !== null && additional_controls }
     </Grid>
   );
 }
@@ -168,7 +169,7 @@ export default props => {
   const classes = useStyles();
   const matches = useMediaQuery(theme => theme.breakpoints.up('md'));
   const { stores, cart_results, spinner, date } = useSelector(state => state.pricesReducer)
-  const { store_filtered, stock_filtered, child_data, page_name, component, pre_component, paging=true } = props;
+  const { store_filtered, stock_filtered, child_data, page_name, component, pre_component, additional_controls, paging=true } = props;
   const store_ids = [...new Set(stock_filtered.map(d => d.store_id))]
   const current_stores = stores.filter(d => store_ids.includes(d.id));
   const page_size = props.page_size || 12;
@@ -190,7 +191,7 @@ export default props => {
       <Container maxWidth="xl">
         <Grid container spacing={4} component={MainPaper} className={classes.content}>
           <Grid item md={2} xs={12} component="div">
-            <Controls current_stores={current_stores} />
+            <Controls current_stores={current_stores} additional_controls={additional_controls} />
           </Grid>
 
           <Grid item md={10} xs={12} component="div">

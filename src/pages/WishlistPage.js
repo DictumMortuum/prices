@@ -1,13 +1,23 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
+import CompareCard from '../components/CompareCard';
 import BoardgameCard from '../components/BoardgameCard';
 import GenericPage from './GenericPage';
-import { useSelector } from "react-redux";
-import { pricesToGroups } from './LandingPage';
+import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import BggInput from '../components/BggInput';
 import { useWishlist } from '../hooks/useWishlist';
 import { useStep } from '../hooks/useStep';
+import { useStore } from '../hooks/useStore';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import { pricesToGroups } from './LandingPage';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Typography from '@material-ui/core/Typography';
 
 const Spinner = () => (
   <Grid container alignContent="center" alignItems="center" direction="column">
@@ -17,11 +27,127 @@ const Spinner = () => (
   </Grid>
 )
 
+const PriorityDropdown = props => {
+  const { wishlist_priority } = useSelector(state => state.pricesReducer)
+  const dispatch = useDispatch();
+
+  return (
+    <FormControl variant="outlined" fullWidth>
+      <InputLabel id="priority-select-label">Priority</InputLabel>
+      <Select
+        labelId="priority-select-label"
+        id="priority-select"
+        value={wishlist_priority}
+        onChange={(event) => {
+          dispatch({
+            type: "SET_PRIORITY",
+            payload: event.target.value
+          })
+        }}
+      >
+        <MenuItem key={-1} value={-1}>All priorities</MenuItem>
+        {[1,2,3,4,5].map(d => (
+          <MenuItem key={d} value={d}>Priority {d}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  )
+}
+
+const ViewSwitch = props => {
+  const { wishlist_stores_view } = useSelector(state => state.pricesReducer)
+  const dispatch = useDispatch();
+
+  return (
+    <FormControl component="fieldset">
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={wishlist_stores_view}
+              onChange={(event) => {
+                dispatch({
+                  type: "SET_WISHLIST_VIEW",
+                  payload: event.target.checked,
+                })
+              }}
+            />
+          }
+          label="Stores view"
+        />
+      </FormGroup>
+    </FormControl>
+  )
+}
+
+export const pricesToStores = data => {
+  const rs = [];
+
+  data.map(d => {
+    if (rs[d.store_id] === undefined) {
+      rs[d.store_id] = {
+        store_id: d.store_id,
+        items: []
+      };
+    }
+
+    rs[d.store_id].items.push(d);
+    return d;
+  })
+
+  return rs.filter(d => d.items.length > 0).sort((a, b) => b.items.length - a.items.length);
+}
+
+const StoresList = props => {
+  const { store_id, items, wishlist } = props;
+  const store = useStore(store_id);
+  let sum = 0.0;
+
+  items.map(d => {
+    sum += d.price;
+    return d;
+  })
+
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={12}>
+        <Typography variant="h4">
+          {store.name} -  €{sum.toFixed(2)}
+        </Typography>
+      </Grid>
+      {items.sort((a, b) => a.boardgame_id - b.boardgame_id).map(d => (
+        <Grid key={d.id} item xs={1}>
+          <CompareCard {...d} wishlist={wishlist} />
+        </Grid>
+      ))}
+    </Grid>
+  )
+}
+
+const WishesView = data => data.map((tile) => (
+  <Grid key={tile.id} item xs={12} md={6} lg={3}>
+    <BoardgameCard {...tile} />
+  </Grid>
+));
+
+const StoresView = wishlist => data => data.map(store => (
+  <Grid key={store.store_id} item xs={12}>
+    <StoresList {...store} wishlist={wishlist} />
+  </Grid>
+));
+
 export default () => {
   const wishlist = useWishlist();
-  const { spinner } = useSelector(state => state.pricesReducer)
-  const { stock_filtered, store_filtered } = useStep(col => col.filter(d => wishlist.includes(d.boardgame_id)))
-  const grouped = pricesToGroups(store_filtered)
+  const { wishlist_priority, wishlist_stores_view, spinner } = useSelector(state => state.pricesReducer);
+  const priority_filtered = wishlist.filter(d => parseInt(d.status.wishlistpriority) === wishlist_priority || wishlist_priority === -1);
+  const { stock_filtered, store_filtered } = useStep(col => col.filter(d => priority_filtered.map(d => d.id).includes(d.boardgame_id)));
+  let grouped;
+
+  if (wishlist_stores_view) {
+    grouped = pricesToStores(store_filtered);
+  } else {
+    grouped = pricesToGroups(store_filtered);
+  }
 
   return (
     <GenericPage
@@ -29,16 +155,20 @@ export default () => {
       stock_filtered={stock_filtered}
       store_filtered={store_filtered}
       page_name="/wishlist"
-      pre_component={
-        <Grid item xs={12}>
-          <BggInput />
-        </Grid>
+      additional_controls={
+        <React.Fragment>
+          <Grid item xs={12}>
+            <BggInput />
+          </Grid>
+          <Grid item xs={12}>
+            <PriorityDropdown />
+          </Grid>
+          <Grid item xs={12}>
+            <ViewSwitch />
+          </Grid>
+        </React.Fragment>
       }
-      component={data => spinner ? <Spinner /> : data.map((tile) => (
-        <Grid key={tile.id} item xs={12} md={6} lg={3}>
-          <BoardgameCard {...tile} />
-        </Grid>
-      ))}
+      component={data => spinner ? <Spinner /> : wishlist_stores_view ? StoresView(wishlist)(data) : WishesView(data)}
     />
   )
 }

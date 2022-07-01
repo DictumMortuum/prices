@@ -11,6 +11,7 @@ export const reducer = (state = {}, action) => {
         search_enabled: false,
         wishlist_term: "",
         wishlist_priority: -1,
+        wishlist_stores_view: false,
         wishlist: [],
         prices: [],
         history: [],
@@ -78,6 +79,11 @@ export const reducer = (state = {}, action) => {
       return {
         ...state,
         wishlist_term: action.payload
+      }
+    case "SET_WISHLIST_VIEW":
+      return {
+        ...state,
+        wishlist_stores_view: action.payload
       }
     case "SET_PRIORITY":
       return {

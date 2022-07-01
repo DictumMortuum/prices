@@ -6,6 +6,7 @@ export const fetchDate = createAsyncThunk('date', async () => {
   const date = await fetch(base + '/rest/v1/date.json').then(res => res.json());
 
   if (saved !== date.date) {
+    console.log("updated!", saved, date.date)
     localStorage.setItem('date', date.date);
     localStorage.setItem('pull', 'true');
   }

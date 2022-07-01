@@ -10,6 +10,7 @@ export const reducer = (state = {}, action) => {
         search_results: [],
         search_enabled: false,
         wishlist_term: "",
+        wishlist_priority: -1,
         wishlist: [],
         prices: [],
         history: [],
@@ -77,6 +78,11 @@ export const reducer = (state = {}, action) => {
       return {
         ...state,
         wishlist_term: action.payload
+      }
+    case "SET_PRIORITY":
+      return {
+        ...state,
+        wishlist_priority: action.payload
       }
     case "TOGGLE_SPINNER":
       return {

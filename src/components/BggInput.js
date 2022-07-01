@@ -15,8 +15,6 @@ const onChange = dispatch => event => dispatch({
 
 const Component = props => {
   const dispatch = useDispatch();
-  const labelRef = useRef()
-  const labelWidth = labelRef.current ? labelRef.current.clientWidth : 0
   const [isSending, setIsSending] = useState(false)
   const isMounted = useRef(true)
   const { wishlist_term } = useSelector(state => state.pricesReducer)
@@ -62,11 +60,10 @@ const Component = props => {
 
   return (
     <FormControl variant="outlined" fullWidth>
-      <InputLabel ref={labelRef} htmlFor="bgg-input">Boardgamegeek username</InputLabel>
+      <InputLabel htmlFor="bgg-input">Bgg username</InputLabel>
       <OutlinedInput
+        style={{ paddingRight: 0 }}
         id="bgg-input"
-        fullWidth
-        labelWidth={labelWidth}
         onChange={onChange(dispatch)}
         onKeyPress={e => {
           if(e.key === 'Enter') {
@@ -76,7 +73,7 @@ const Component = props => {
         }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton type="submit" disabled={isSending} onClick={e => { e.preventDefault(); sendRequest(wishlist_term) }} aria-label="search">
+            <IconButton disabled={isSending} onClick={e => { e.preventDefault(); sendRequest(wishlist_term) }} aria-label="search">
               <SearchIcon />
             </IconButton>
           </InputAdornment>

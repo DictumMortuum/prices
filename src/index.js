@@ -35,6 +35,15 @@ const theme = createTheme({
       primary: "#2e3440",
     }
   },
+  overrides: {
+    MuiInputLabel: {
+      root: {
+        backgroundColor: '#ffffff',
+        paddingLeft: '4px',
+        paddingRight: '4px'
+      }
+    }
+  }
 });
 
 ReactDOM.render(

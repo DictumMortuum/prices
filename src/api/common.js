@@ -15,9 +15,33 @@ export const logError = error => {
   console.log(`Attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`);
 }
 
+const extractBggItem = d => {
+  const obj = {};
+  const { children } = d;
+
+  children.map(({ name, attributes, value}) => {
+    if(value !== "") {
+      obj[name] = value;
+    } else {
+      obj[name] = attributes
+    }
+
+    return name
+  });
+
+  return {
+    id: parseInt(d.attributes.objectid),
+    ...obj,
+  }
+}
+
 export const transformBggData = data => {
-  const objtoid = data.children.map(d => d.attributes.objectid)
-  const filtered = objtoid.filter(d => d !== undefined)
-  const unique = [...new Set(filtered)]
-  return unique.map(d => parseInt(d))
+  // console.log(
+  //   data.children.map(extractBggItem)
+  // )
+  // const objtoid = data.children.map(d => d.attributes.objectid)
+  // const filtered = objtoid.filter(d => d !== undefined)
+  // const unique = [...new Set(filtered)]
+  // return unique.map(d => parseInt(d))
+  return data.children.map(extractBggItem);
 }

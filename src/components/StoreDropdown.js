@@ -17,6 +17,7 @@ export default props => {
         labelId="store-select-label"
         id="store-select"
         value={store}
+        multiple
         onChange={(event) => {
           dispatch({
             type: "SET_STORE",

@@ -2,7 +2,7 @@ export const reducer = (state = {}, action) => {
   switch (action.type) {
     case "INIT":
       return {
-        store: -1,
+        store: [-1],
         stock: 0,
         stocks: ["In stock", "Preorder", "Out of stock"],
         cart_results: [],
@@ -49,9 +49,18 @@ export const reducer = (state = {}, action) => {
       }
     }
     case "SET_STORE": {
-      return {
-        ...state,
-        store: action.store,
+      const [last] = action.store.slice(-1);
+
+      if (last === -1) {
+        return {
+          ...state,
+          store: [-1]
+        }
+      } else {
+        return {
+          ...state,
+          store: [...state.store.filter(d => d !== -1), last]
+        }
       }
     }
     case "ADD_TO_CART":

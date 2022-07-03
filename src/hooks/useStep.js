@@ -1,6 +1,12 @@
 import { useSelector } from "react-redux";
 
-export const storeFilter = store => d => d.store_id === store || store === -1
+export const storeFilter = store => d => {
+  if (store.includes(-1)) {
+    return true;
+  } else {
+    return store.includes(d.store_id);
+  }
+}
 export const stockFilter = stock => d => d.stock === stock || stock === -1
 
 export const useStep = f => {

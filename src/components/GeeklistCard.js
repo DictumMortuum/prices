@@ -25,7 +25,7 @@ export default props => {
   const { id, boardgame_id, rank, items, alternate } = props;
   const boardgame = useBoardgame(boardgame_id);
   const { boardgame_name } = boardgame;
-  const available_prices = items.sort((a, b) => a.price > b.price)
+  const available_prices = items.sort((a, b) => a.price - b.price)
   const l = available_prices.length;
 
   let lowest = undefined;

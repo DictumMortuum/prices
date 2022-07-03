@@ -8,7 +8,7 @@ import { useHistory } from '../hooks/useHistory';
 import { useStep } from '../hooks/useStep';
 import { useId } from '../hooks/useId';
 
-const fn = id => col => col.filter(d => d.boardgame_id === id).sort((a, b) => a.price > b.price)
+const fn = id => col => col.filter(d => d.boardgame_id === id).sort((a, b) => a.price - b.price)
 
 export default () => {
   const id = useId();

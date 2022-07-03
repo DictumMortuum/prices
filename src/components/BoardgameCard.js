@@ -18,7 +18,7 @@ export default props => {
   const classes = useStyles();
   const boardgame = useBoardgame(boardgame_id);
   const { images, boardgame_name } = boardgame;
-  const available_prices = items.sort((a, b) => a.price > b.price)
+  const available_prices = items.sort((a, b) => a.price - b.price)
   const l = available_prices.length;
 
   let lowest = undefined;

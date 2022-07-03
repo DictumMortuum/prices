@@ -98,7 +98,7 @@ export default props => {
   const { history } = props;
   const { store, stock } = useSelector(state => state.pricesReducer)
   const p = history.filter(stockFilter(stock)).filter(storeFilter(store))
-  const processed = transform(p).sort((a, b) => a.cr_date > b.cr_date)
+  const processed = transform(p).sort((a, b) => b.cr_date - a.cr_date)
 
   return (
      <Paper className={classes.root}>

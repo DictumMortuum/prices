@@ -23,7 +23,7 @@ export const pricesToGroups = data => {
     return d
   })
 
-  return rs.filter(d => d.items.length > 0).sort((a, b) => a.rank > b.rank)
+  return rs.filter(d => d.items.length > 0).sort((a, b) => a.rank - b.rank)
 }
 
 export default () => {

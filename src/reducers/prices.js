@@ -4,7 +4,6 @@ export const reducer = (state = {}, action) => {
       return {
         store: [-1],
         stock: 0,
-        stocks: ["In stock", "Preorder", "Out of stock"],
         cart_results: [],
         search_term: "",
         search_results: [],

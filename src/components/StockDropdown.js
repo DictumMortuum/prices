@@ -7,7 +7,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { useParams } from '../common';
 
 export default () => {
-  const { stock, stocks } = useSelector(state => state.pricesReducer)
+  const stocks = ["In stock", "Preorder", "Out of stock"];
+  const { stock } = useSelector(state => state.pricesReducer);
   const { stock: url_stock, has_stock } = useParams();
   const dispatch = useDispatch();
 

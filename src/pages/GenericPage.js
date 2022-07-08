@@ -23,7 +23,7 @@ import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import { ShoppingCart, Favorite, Pageview, Compare } from '@material-ui/icons';
 import { useLogin } from '../hooks/useLogin';
-import { useQueryParam, NumberParam } from 'use-query-params';
+import { useQueryParam, NumberParam, withDefault } from 'use-query-params';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -154,8 +154,9 @@ const Controls = props => {
 }
 
 const Main = props => {
-  const { child_data, page_size, paging, page, pre_component, store_filtered, component, page_data, spinner } = props;
-  const [, setPage] = useQueryParam('page', NumberParam)
+  const { child_data, page_size, paging, pre_component, store_filtered, component, spinner } = props;
+  const [page, setPage] = useQueryParam('page', withDefault(NumberParam, 1));
+  const page_data = paginate(child_data, page_size, page, paging);
 
   return (
     <Grid container spacing={2}>
@@ -179,13 +180,7 @@ export default props => {
   const store_ids = [...new Set(stock_filtered.map(d => d.store_id))];
   const current_stores = stores.filter(d => store_ids.includes(d.id));
   const page_size = props.page_size || 12;
-  const [page, setPage] = useQueryParam('page', NumberParam);
-
-  if (page === undefined) {
-    setPage(1);
-  }
-
-  const page_data = paginate(child_data, page_size, page, paging);
+  const [page] = useQueryParam('page', withDefault(NumberParam, 1));
   const { loginWithRedirect, logout, isAuthenticated, user } = useLogin();
 
   useEffect(() => {
@@ -209,11 +204,9 @@ export default props => {
               child_data={child_data}
               page_size={page_size}
               paging={paging}
-              page={page}
               pre_component={pre_component}
               store_filtered={store_filtered}
               spinner={spinner}
-              page_data={page_data}
               component={component}
             />
           </Grid>

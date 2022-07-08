@@ -5,7 +5,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
 import { useDispatch } from "react-redux";
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import { Link } from "react-router-dom";
+import Link from './Link';
 import { useSelector } from "react-redux";
 import { Typography } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';

@@ -9,7 +9,7 @@ import StoreDropdown from '../components/StoreDropdown';
 import Breadcrumbs from '../components/Breadcrumbs';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useSelector } from "react-redux";
-import { Link } from 'react-router-dom';
+import Link from '../components/Link';
 import Typography from '@material-ui/core/Typography';
 import EmptyImg from './cartoff.svg';
 import Paper from '@material-ui/core/Paper';

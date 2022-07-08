@@ -5,7 +5,7 @@ import { Grid } from '@material-ui/core';
 import { useBoardgame } from '../hooks/useBoardgame';
 import Paper from '@material-ui/core/Paper';
 import classNames from 'classnames';
-import { Link } from "react-router-dom";
+import Link from './Link';
 
 const useStyles = makeStyles((theme) => ({
   margin: {

@@ -4,6 +4,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import { NumericArrayParam, useQueryParam } from 'use-query-params';
 
 const filterStores = col => {
@@ -17,7 +18,7 @@ const filterStores = col => {
 }
 
 export default props => {
-  const { stores } = props;
+  const { stores, current_stores } = props;
   const { store } = useSelector(state => state.pricesReducer)
   const dispatch = useDispatch();
   const [, setQstore] = useQueryParam("store", NumericArrayParam);
@@ -42,6 +43,9 @@ export default props => {
         }}
       >
         <MenuItem key={-1} value={-1}>All stores</MenuItem>
+        <ListSubheader style={{ background: "white" }}>With Stock</ListSubheader>
+        {current_stores.map(d => <MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>)}
+        <ListSubheader style={{ background: "white" }}>Rest</ListSubheader>
         {stores.map(d => <MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>)}
       </Select>
     </FormControl>

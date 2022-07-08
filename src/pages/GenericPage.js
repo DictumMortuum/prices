@@ -138,12 +138,15 @@ const Nothing = props => (
 )
 
 const Controls = props => {
-  const { current_stores, additional_controls } = props;
+  const { stores, additional_controls, stock_filtered } = props;
+  const store_ids = [...new Set(stock_filtered.map(d => d.store_id))];
+  const current_stores = stores.filter(d => store_ids.includes(d.id));
+  const stores_without_stock = stores.filter(d => !store_ids.includes(d.id));
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <StoreDropdown stores={current_stores} />
+        <StoreDropdown stores={stores_without_stock} current_stores={current_stores} />
       </Grid>
       <Grid item xs={12}>
         <StockDropdown />
@@ -177,8 +180,6 @@ export default props => {
   const matches = useMediaQuery(theme => theme.breakpoints.up('md'));
   const { stores, cart_results, spinner, date } = useSelector(state => state.pricesReducer);
   const { store_filtered, stock_filtered, child_data, component, pre_component, additional_controls, paging=true } = props;
-  const store_ids = [...new Set(stock_filtered.map(d => d.store_id))];
-  const current_stores = stores.filter(d => store_ids.includes(d.id));
   const page_size = props.page_size || 12;
   const [page] = useQueryParam('page', withDefault(NumberParam, 1));
   const { loginWithRedirect, logout, isAuthenticated, user } = useLogin();
@@ -196,7 +197,7 @@ export default props => {
       <Container maxWidth="xl">
         <Grid container spacing={4} component={MainPaper} className={classes.content}>
           <Grid item md={2} xs={12} component="div">
-            <Controls current_stores={current_stores} additional_controls={additional_controls} />
+            <Controls stock_filtered={stock_filtered} stores={stores} additional_controls={additional_controls} />
           </Grid>
 
           <Grid item md={10} xs={12} component="div">

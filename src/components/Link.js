@@ -2,8 +2,10 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const PlainLink = ({ to, children, component, ...other }) => {
-  const currentParams = useLocation().search;
-  const toWithParams = `${to}${currentParams}`
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  params.delete("page");
+  const toWithParams = `${to}?${params.toString()}`
 
   return (
     <Link {...other} to={toWithParams}>

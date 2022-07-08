@@ -37,18 +37,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const addUTM = url => {
-  let rs;
-  if(url[url.length-1] === "/") {
-    rs = url.slice(0, -1)
-  } else {
-    rs = url
-  }
+const addUTM = raw => {
+  const url = new URL(raw);
+  url.searchParams.append("utm_source", "dictummortuum");
+  url.searchParams.append("utm_medium", "dictummortuum");
+  url.searchParams.append("utm_campaign", "dictummortuum");
 
-  rs += "?utm_source=dictummortuum"
-  rs += "&utm_medium=dictummortuum"
-  rs += "&utm_campaign=dictummortuum"
-  return rs
+  return url.toString();
 }
 
 const Media = props => {

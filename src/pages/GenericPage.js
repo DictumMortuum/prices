@@ -18,13 +18,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 import packagejs from '../../package.json';
 import Pagination from '@material-ui/lab/Pagination';
-import { paginate, pages, changePage, useParams } from '../common';
-import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import { ShoppingCart, Favorite, Pageview, Compare } from '@material-ui/icons';
 import { useLogin } from '../hooks/useLogin';
+import { useQueryParam, NumberParam } from 'use-query-params';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,6 +48,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
 }));
+
+const paginate = (array, pageSize, pageNumber, paging) => {
+  return paging === true ? array.slice((pageNumber-1) * pageSize, pageNumber * pageSize) : array;
+}
+
+const pages = (col, pageSize) => Math.ceil(col.length/pageSize)
 
 const MainPaper = props => (
   <Paper variant="outlined" square {...props} />
@@ -149,17 +154,18 @@ const Controls = props => {
 }
 
 const Main = props => {
-  const { child_data, page_size, paging, page, page_name, history, pre_component, store_filtered, component, page_data, spinner } = props;
+  const { child_data, page_size, paging, page, pre_component, store_filtered, component, page_data, spinner } = props;
+  const [, setPage] = useQueryParam('page', NumberParam)
 
   return (
     <Grid container spacing={2}>
       {child_data.length > page_size && paging && <Grid item xs={12}>
-        <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={changePage(page_name, history)} />
+        <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={(event, value) => setPage(value, 'pushIn')} />
       </Grid>}
       {pre_component !== undefined && pre_component}
       {store_filtered.length > 0 ? component(page_data) : <Nothing spinner={spinner} />}
       {child_data.length > page_size && paging && <Grid item xs={12}>
-        <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={changePage(page_name, history)} />
+        <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={(event, value) => setPage(value, 'pushIn')} />
       </Grid>}
     </Grid>
   );
@@ -169,12 +175,11 @@ export default props => {
   const classes = useStyles();
   const matches = useMediaQuery(theme => theme.breakpoints.up('md'));
   const { stores, cart_results, spinner, date } = useSelector(state => state.pricesReducer)
-  const { store_filtered, stock_filtered, child_data, page_name, component, pre_component, additional_controls, paging=true } = props;
+  const { store_filtered, stock_filtered, child_data, component, pre_component, additional_controls, paging=true } = props;
   const store_ids = [...new Set(stock_filtered.map(d => d.store_id))]
   const current_stores = stores.filter(d => store_ids.includes(d.id));
   const page_size = props.page_size || 12;
-  const history = useHistory();
-  const { page } = useParams();
+  const [page] = useQueryParam('page', NumberParam)
   const page_data = paginate(child_data, page_size, page, paging);
   const { loginWithRedirect, logout, isAuthenticated, user } = useLogin();
 
@@ -200,8 +205,6 @@ export default props => {
               page_size={page_size}
               paging={paging}
               page={page}
-              page_name={page_name}
-              history={history}
               pre_component={pre_component}
               store_filtered={store_filtered}
               spinner={spinner}

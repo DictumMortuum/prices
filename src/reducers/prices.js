@@ -4,6 +4,7 @@ export const reducer = (state = {}, action) => {
       return {
         store: [-1],
         stock: 0,
+        order: 0,
         cart_results: [],
         search_term: "",
         search_results: [],
@@ -48,18 +49,9 @@ export const reducer = (state = {}, action) => {
       }
     }
     case "SET_STORE": {
-      const [last] = action.store.slice(-1);
-
-      if (last === -1) {
-        return {
-          ...state,
-          store: [-1]
-        }
-      } else {
-        return {
-          ...state,
-          store: [...state.store.filter(d => d !== -1), last]
-        }
+      return {
+        ...state,
+        store: action.store,
       }
     }
     case "ADD_TO_CART":

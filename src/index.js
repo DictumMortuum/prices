@@ -10,6 +10,7 @@ import App from './App';
 import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { Auth0Provider } from "@auth0/auth0-react";
+import { QueryParamProvider, transformSearchStringJsonSafe } from 'use-query-params';
 
 const rootReducer = combineReducers({
   pricesReducer,
@@ -22,6 +23,10 @@ const store = createStore(rootReducer, composedEnhancer)
 store.dispatch({
   type: "INIT"
 });
+
+const queryStringifyOptions = {
+  transformSearchString: transformSearchStringJsonSafe,
+};
 
 const theme = createTheme({
   palette: {
@@ -52,7 +57,9 @@ ReactDOM.render(
       <Provider store={store}>
         <Route path="/">
           <Auth0Provider domain="dev-11hy0hqn.us.auth0.com" clientId="gEd77V5i5uBswawxfycFKL1eEv8BlhdE" redirectUri={window.location.origin}>
-            <App />
+            <QueryParamProvider ReactRouterRoute={Route} stringifyOptions={queryStringifyOptions}>
+              <App />
+            </QueryParamProvider>
           </Auth0Provider>
         </Route>
       </Provider>

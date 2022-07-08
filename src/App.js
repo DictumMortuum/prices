@@ -11,15 +11,44 @@ import ComparePage from './pages/ComparePage';
 import { fetchAllPrices } from './api/prices';
 import { fetchStores } from './api/stores';
 import { fetchDate } from './api/date';
+import { StringParam, useQueryParam } from 'use-query-params';
 
 export default () => {
   const dispatch = useDispatch();
+  const [qstore] = useQueryParam("store", StringParam);
+  const [qstock] = useQueryParam("stock", StringParam);
 
   useEffect(() => {
     dispatch(fetchAllPrices())
     dispatch(fetchStores())
     dispatch(fetchDate())
   }, []);
+
+  useEffect(() => {
+    if (qstore === undefined) {
+      return
+    }
+
+    const arr = qstore.split(",").map(d => parseInt(d))
+
+    if (arr.length > 0) {
+      dispatch({
+        type: "SET_STORE",
+        store: arr,
+      })
+    }
+  }, [qstore]);
+
+  useEffect(() => {
+    if (qstock === undefined) {
+      return
+    }
+
+    dispatch({
+      type: "SET_STOCK",
+      stock: parseInt(qstock),
+    })
+  }, [qstock]);
 
   return (
     <Switch >

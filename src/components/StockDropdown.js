@@ -1,27 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
-import { useParams } from '../common';
+import { StringParam, useQueryParam } from 'use-query-params';
 
 export default () => {
   const stocks = ["In stock", "Preorder", "Out of stock"];
   const { stock } = useSelector(state => state.pricesReducer);
-  const { stock: url_stock, has_stock } = useParams();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!has_stock) {
-      return
-    }
-
-    dispatch({
-      type: "SET_STOCK",
-      stock: parseInt(url_stock)
-    })
-  }, [url_stock]);
+  const [, setQstock] = useQueryParam("stock", StringParam);
 
   return (
     <FormControl variant="outlined" fullWidth>
@@ -35,6 +24,8 @@ export default () => {
             type: "SET_STOCK",
             stock: event.target.value
           })
+
+          setQstock(event.target.value);
         }}
       >
         {stocks.map((d, i) => <MenuItem key={d} value={i}>{d}</MenuItem>)}

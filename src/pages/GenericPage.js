@@ -174,12 +174,17 @@ const Main = props => {
 export default props => {
   const classes = useStyles();
   const matches = useMediaQuery(theme => theme.breakpoints.up('md'));
-  const { stores, cart_results, spinner, date } = useSelector(state => state.pricesReducer)
+  const { stores, cart_results, spinner, date } = useSelector(state => state.pricesReducer);
   const { store_filtered, stock_filtered, child_data, component, pre_component, additional_controls, paging=true } = props;
-  const store_ids = [...new Set(stock_filtered.map(d => d.store_id))]
+  const store_ids = [...new Set(stock_filtered.map(d => d.store_id))];
   const current_stores = stores.filter(d => store_ids.includes(d.id));
   const page_size = props.page_size || 12;
-  const [page] = useQueryParam('page', NumberParam)
+  const [page, setPage] = useQueryParam('page', NumberParam);
+
+  if (page === undefined) {
+    setPage(1);
+  }
+
   const page_data = paginate(child_data, page_size, page, paging);
   const { loginWithRedirect, logout, isAuthenticated, user } = useLogin();
 

@@ -4,7 +4,7 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
-import { StringParam, useQueryParam } from 'use-query-params';
+import { NumericArrayParam, useQueryParam } from 'use-query-params';
 
 const filterStores = col => {
   const [last] = col.slice(-1);
@@ -20,7 +20,7 @@ export default props => {
   const { stores } = props;
   const { store } = useSelector(state => state.pricesReducer)
   const dispatch = useDispatch();
-  const [, setQstore] = useQueryParam("store", StringParam);
+  const [, setQstore] = useQueryParam("store", NumericArrayParam);
 
   return (
     <FormControl variant="outlined" fullWidth>

@@ -4,13 +4,13 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
-import { StringParam, useQueryParam } from 'use-query-params';
+import { NumberParam, useQueryParam } from 'use-query-params';
 
 export default () => {
   const stocks = ["In stock", "Preorder", "Out of stock"];
   const { stock } = useSelector(state => state.pricesReducer);
   const dispatch = useDispatch();
-  const [, setQstock] = useQueryParam("stock", StringParam);
+  const [, setQstock] = useQueryParam("stock", NumberParam);
 
   return (
     <FormControl variant="outlined" fullWidth>

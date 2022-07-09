@@ -9,15 +9,13 @@ import BggInput from '../components/BggInput';
 import { useWishlist } from '../hooks/useWishlist';
 import { useStep } from '../hooks/useStep';
 import { useStore } from '../hooks/useStore';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
 import { pricesToGroups } from './LandingPage';
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
+import { PriorityDropdown } from '../components/PriorityDropdown';
 
 const Spinner = () => (
   <Grid container alignContent="center" alignItems="center" direction="column">
@@ -27,36 +25,8 @@ const Spinner = () => (
   </Grid>
 )
 
-const PriorityDropdown = props => {
-  const { wishlist_priority } = useSelector(state => state.pricesReducer)
-  const dispatch = useDispatch();
-
-  return (
-    <FormControl variant="outlined" fullWidth>
-      <InputLabel id="priority-select-label">Priority</InputLabel>
-      <Select
-        labelId="priority-select-label"
-        id="priority-select"
-        value={wishlist_priority}
-        onChange={(event) => {
-          dispatch({
-            type: "SET_PRIORITY",
-            payload: event.target.value
-          })
-        }}
-      >
-        <MenuItem key={-1} value={-1}>All priorities</MenuItem>
-        {[1,2,3,4,5].map(d => (
-          <MenuItem key={d} value={d}>Priority {d}</MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  )
-}
-
 const ViewSwitch = props => {
-  const { wishlist_stores_view } = useSelector(state => state.pricesReducer)
-  const dispatch = useDispatch();
+  const { wishlist_stores_view, onChange } = props;
 
   return (
     <FormControl component="fieldset">
@@ -65,12 +35,7 @@ const ViewSwitch = props => {
           control={
             <Switch
               checked={wishlist_stores_view}
-              onChange={(event) => {
-                dispatch({
-                  type: "SET_WISHLIST_VIEW",
-                  payload: event.target.checked,
-                })
-              }}
+              onChange={onChange}
             />
           }
           label="Stores view"
@@ -138,6 +103,7 @@ const StoresView = wishlist => data => data.map(store => (
 
 export default () => {
   const wishlist = useWishlist();
+  const dispatch = useDispatch();
   const { wishlist_priority, wishlist_stores_view, spinner } = useSelector(state => state.pricesReducer);
   const priority_filtered = wishlist.filter(d => parseInt(d.status.wishlistpriority) === wishlist_priority || wishlist_priority === -1);
   const { stock_filtered, store_filtered } = useStep(col => col.filter(d => priority_filtered.map(d => d.id).includes(d.boardgame_id)));
@@ -161,10 +127,26 @@ export default () => {
             <BggInput />
           </Grid>
           <Grid item xs={12}>
-            <PriorityDropdown />
+            <PriorityDropdown
+              wishlist_priority={wishlist_priority}
+              onChange={(event) => {
+                dispatch({
+                  type: "SET_PRIORITY",
+                  payload: event.target.value
+                })
+              }}
+            />
           </Grid>
           <Grid item xs={12}>
-            <ViewSwitch />
+            <ViewSwitch
+              wishlist_stores_view={wishlist_stores_view}
+              onChange={(event) => {
+                dispatch({
+                  type: "SET_WISHLIST_VIEW",
+                  payload: event.target.checked,
+                })
+              }}
+            />
           </Grid>
         </React.Fragment>
       }

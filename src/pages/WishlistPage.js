@@ -17,7 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import { PriorityDropdown } from '../components/PriorityDropdown';
 import { Spinner } from '../components/Spinner';
 
-const ViewSwitch = props => {
+export const ViewSwitch = props => {
   const { wishlist_stores_view, onChange } = props;
 
   return (
@@ -37,6 +37,10 @@ const ViewSwitch = props => {
   )
 }
 
+const sumPrices = col => col.reduce((prev, curr) => {
+  return prev + curr.price;
+}, 0.0).toFixed(2);
+
 export const pricesToStores = data => {
   const rs = [];
 
@@ -52,24 +56,27 @@ export const pricesToStores = data => {
     return d;
   })
 
-  return rs.filter(d => d.items.length > 0).sort((a, b) => b.items.length - a.items.length);
+  return rs.filter(d => d.items.length > 0).sort((a, b) => {
+    const diff = b.items.length - a.items.length
+
+    if(diff !== 0) {
+      return diff
+    } else {
+      return sumPrices(b.items) - sumPrices(a.items);
+    }
+  });
 }
 
 const StoresList = props => {
   const { store_id, items, wishlist } = props;
   const store = useStore(store_id);
-  let sum = 0.0;
-
-  items.map(d => {
-    sum += d.price;
-    return d;
-  })
+  const sum = sumPrices(items);
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
         <Typography variant="h4">
-          {store.name} -  €{sum.toFixed(2)}
+          {store.name} -  €{sum}
         </Typography>
       </Grid>
       {items.sort((a, b) => a.boardgame_id - b.boardgame_id).map(d => (
@@ -81,13 +88,13 @@ const StoresList = props => {
   )
 }
 
-const WishesView = data => data.map((tile) => (
+export const WishesView = data => data.map((tile) => (
   <Grid key={tile.id} item xs={12} md={6} lg={3}>
     <BoardgameCard {...tile} />
   </Grid>
 ));
 
-const StoresView = wishlist => data => data.map(store => (
+export const StoresView = wishlist => data => data.map(store => (
   <Grid key={store.store_id} item xs={12}>
     <StoresList {...store} wishlist={wishlist} />
   </Grid>

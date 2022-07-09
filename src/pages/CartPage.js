@@ -1,25 +1,45 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import PriceCard from '../components/PriceCard';
 import GenericPage from './GenericPage';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useStep } from '../hooks/useStep';
+import { pricesToGroups } from './LandingPage';
+import { Spinner } from '../components/Spinner';
+import { pricesToStores, StoresView, WishesView, ViewSwitch } from './WishlistPage';
 
 export default () => {
-  const { cart_results } = useSelector(state => state.pricesReducer);
-  const { store_filtered, stock_filtered } = useStep(() => cart_results);
+  const { cart_results, wishlist_stores_view, spinner } = useSelector(state => state.pricesReducer);
+  const { stock_filtered, store_filtered } = useStep(col => col.filter(d => cart_results.includes(d.boardgame_id)));
+  const dispatch = useDispatch();
+  let grouped;
+
+  if (wishlist_stores_view) {
+    grouped = pricesToStores(store_filtered);
+  } else {
+    grouped = pricesToGroups(store_filtered);
+  }
 
   return (
     <GenericPage
-      child_data={store_filtered}
+      child_data={grouped}
       stock_filtered={stock_filtered}
       store_filtered={store_filtered}
       page_name="/cart"
-      component={data => data.map((tile) => (
-        <Grid key={tile.id} item xs={12} md={6} lg={4}>
-          <PriceCard boardgame={tile} />
+      additional_controls={
+        <Grid item xs={12}>
+          <ViewSwitch
+            wishlist_stores_view={wishlist_stores_view}
+            onChange={(event) => {
+              dispatch({
+
+                type: "SET_WISHLIST_VIEW",
+                payload: event.target.checked,
+              })
+            }}
+          />
         </Grid>
-      ))}
+      }
+      component={data => spinner ? <Spinner /> : wishlist_stores_view ? StoresView(cart_results.map(d => ({id: d})))(data) : WishesView(data)}
     />
   )
 }

@@ -3,8 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
-import { useDispatch } from "react-redux";
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Link from './Link';
 import { useSelector } from "react-redux";
 import { Typography } from '@material-ui/core';
@@ -74,7 +72,6 @@ const Media = props => {
 
 export default props => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const { stores } = useSelector(state => state.pricesReducer);
   const { url, name, store_id, price, stock } = props.boardgame;
   const self = window.location.href;
@@ -117,21 +114,13 @@ export default props => {
         <Typography variant="subtitle1" color="textSecondary">
           {stores.filter(d => d.id === store_id).map(d => d.name)}
         </Typography>
+        <Typography variant="subtitle1" color="textSecondary">
+          €{price}
+        </Typography>
         <Typography variant="subtitle1">
           {name}
         </Typography>
       </CardContent>
-      <CardActions>
-        <IconButton onClick={() => dispatch({
-          type: "ADD_TO_CART",
-          cart: props.boardgame,
-        })}>
-          <AddShoppingCartIcon />
-        </IconButton>
-        <div style={{ marginLeft: 'auto', marginRight: 10}}>
-          {"€ " + price}
-        </div>
-      </CardActions>
     </Card>
   )
 }

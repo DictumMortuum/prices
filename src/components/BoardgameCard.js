@@ -6,6 +6,10 @@ import CardContent from '@material-ui/core/CardContent';
 import BoardgameImage from './BoardgameImage';
 import Link from './Link';
 import { useBoardgame } from '../hooks/useBoardgame';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import CardActions from '@material-ui/core/CardActions';
+import IconButton from '@material-ui/core/IconButton';
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   card_header: {
@@ -15,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default props => {
   const { id, boardgame_id, rank, items } = props;
+  const dispatch = useDispatch();
   const classes = useStyles();
   const boardgame = useBoardgame(boardgame_id);
   const { images, boardgame_name } = boardgame;
@@ -50,6 +55,14 @@ export default props => {
           {boardgame_name}
         </Typography>
       </CardContent>
+      <CardActions>
+        <IconButton onClick={() => dispatch({
+          type: "ADD_TO_CART",
+          cart: boardgame_id,
+        })}>
+          <AddShoppingCartIcon />
+        </IconButton>
+      </CardActions>
     </Card>
   )
 }

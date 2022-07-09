@@ -4,18 +4,10 @@ import GeeklistCard from '../components/GeeklistCard';
 import GenericPage from './GenericPage';
 import { useSelector } from "react-redux";
 import { pricesToGroups } from './LandingPage';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { useGeeklist } from '../hooks/useGeeklist';
 import { useStep } from '../hooks/useStep';
 import { useId } from '../hooks/useId';
-
-const Spinner = () => (
-  <Grid container alignContent="center" alignItems="center" direction="column">
-    <Grid item xs={12}>
-      <CircularProgress />
-    </Grid>
-  </Grid>
-)
+import { Spinner } from '../components/Spinner';
 
 export default () => {
   const geeklist_id = useId();

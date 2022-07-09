@@ -4,7 +4,6 @@ import CompareCard from '../components/CompareCard';
 import BoardgameCard from '../components/BoardgameCard';
 import GenericPage from './GenericPage';
 import { useDispatch, useSelector } from "react-redux";
-import CircularProgress from '@material-ui/core/CircularProgress';
 import BggInput from '../components/BggInput';
 import { useWishlist } from '../hooks/useWishlist';
 import { useStep } from '../hooks/useStep';
@@ -16,14 +15,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import { PriorityDropdown } from '../components/PriorityDropdown';
-
-const Spinner = () => (
-  <Grid container alignContent="center" alignItems="center" direction="column">
-    <Grid item xs={12}>
-      <CircularProgress />
-    </Grid>
-  </Grid>
-)
+import { Spinner } from '../components/Spinner';
 
 const ViewSwitch = props => {
   const { wishlist_stores_view, onChange } = props;

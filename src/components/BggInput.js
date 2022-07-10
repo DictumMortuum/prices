@@ -7,6 +7,7 @@ import { fetchWishList } from '../hooks/useWishlist';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import { StringParam, useQueryParam } from 'use-query-params';
 
 const onChange = dispatch => event => dispatch({
   type: "SET_WISHLIST_USERNAME",
@@ -18,6 +19,7 @@ const Component = props => {
   const [isSending, setIsSending] = useState(false)
   const isMounted = useRef(true)
   const { wishlist_term } = useSelector(state => state.pricesReducer)
+  const [, setQname] = useQueryParam("bgg_username", StringParam);
 
   // set isMounted to false when we unmount the component
   useEffect(() => {
@@ -48,6 +50,8 @@ const Component = props => {
       type: "SET_WISHLIST",
       payload: rs
     })
+
+    setQname(term);
 
     dispatch({
       type: "TOGGLE_SPINNER"

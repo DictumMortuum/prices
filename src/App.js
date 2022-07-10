@@ -11,12 +11,13 @@ import ComparePage from './pages/ComparePage';
 import { fetchAllPrices } from './api/prices';
 import { fetchStores } from './api/stores';
 import { fetchDate } from './api/date';
-import { NumberParam, NumericArrayParam, withDefault, useQueryParam } from 'use-query-params';
+import { NumberParam, StringParam, NumericArrayParam, withDefault, useQueryParam } from 'use-query-params';
 
 export default () => {
   const dispatch = useDispatch();
   const [qstore] = useQueryParam("store", withDefault(NumericArrayParam, [-1]));
   const [qstock] = useQueryParam("stock", withDefault(NumberParam, 0));
+  const [qname] = useQueryParam("bgg_username", StringParam);
 
   useEffect(() => {
     dispatch(fetchAllPrices())
@@ -38,6 +39,14 @@ export default () => {
     })
   }, [qstock]);
 
+  useEffect(() => {
+    console.log(qname, "qname")
+    dispatch({
+      type: "SET_WISHLIST_USERNAME",
+      payload: qname,
+    })
+  }, [qname]);
+
   return (
     <Switch >
       <Route path={`/`} exact>
@@ -50,9 +59,6 @@ export default () => {
         <SearchPage />
       </Route>
       <Route path={`/wishlist`} exact>
-        <WishlistPage />
-      </Route>
-      <Route path={`/wishlist/:username`}>
         <WishlistPage />
       </Route>
       <Route path={`/geeklist/:geeklist_id`}>

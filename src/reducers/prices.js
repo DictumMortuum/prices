@@ -59,6 +59,11 @@ export const reducer = (state = {}, action) => {
         ...state,
         cart_results: [...state.cart_results.filter(d => d !== action.cart), action.cart],
       }
+    case "SET_CART":
+      return {
+        ...state,
+        cart_results: action.payload,
+      }
     case "SET_SEARCH_TERM":
       return {
         ...state,

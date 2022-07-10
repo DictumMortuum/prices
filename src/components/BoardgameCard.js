@@ -10,12 +10,26 @@ import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import { useDispatch } from "react-redux";
+import { NumericArrayParam, withDefault, useQueryParam } from 'use-query-params';
 
 const useStyles = makeStyles((theme) => ({
   card_header: {
     minHeight: 120,
   },
 }));
+
+const onClick = (dispatch, setBggId) => (boardgame_id, bgg_ids) => {
+  dispatch({
+    type: "ADD_TO_CART",
+    cart: boardgame_id,
+  })
+
+  if(bgg_ids.includes(boardgame_id)) {
+    setBggId(bgg_ids.filter(d => d !== boardgame_id));
+  } else {
+    setBggId([...bgg_ids, boardgame_id])
+  }
+}
 
 export default props => {
   const { id, boardgame_id, rank, items } = props;
@@ -25,6 +39,7 @@ export default props => {
   const { images, boardgame_name } = boardgame;
   const available_prices = items.sort((a, b) => a.price - b.price)
   const l = available_prices.length;
+  const [bgg_ids, setBggId] = useQueryParam("bgg_id", withDefault(NumericArrayParam, []));
 
   let lowest = undefined;
   let highest = undefined;
@@ -56,10 +71,7 @@ export default props => {
         </Typography>
       </CardContent>
       <CardActions>
-        <IconButton onClick={() => dispatch({
-          type: "ADD_TO_CART",
-          cart: boardgame_id,
-        })}>
+        <IconButton onClick={() => onClick(dispatch, setBggId)(boardgame_id, bgg_ids)}>
           <AddShoppingCartIcon />
         </IconButton>
       </CardActions>

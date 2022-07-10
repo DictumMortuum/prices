@@ -16,6 +16,7 @@ import { NumberParam, StringParam, NumericArrayParam, withDefault, useQueryParam
 export default () => {
   const dispatch = useDispatch();
   const [qstore] = useQueryParam("store", withDefault(NumericArrayParam, [-1]));
+  const [bgg_id] = useQueryParam("bgg_id", withDefault(NumericArrayParam, []));
   const [qstock] = useQueryParam("stock", withDefault(NumberParam, 0));
   const [qname] = useQueryParam("bgg_username", StringParam);
 
@@ -40,12 +41,18 @@ export default () => {
   }, [qstock]);
 
   useEffect(() => {
-    console.log(qname, "qname")
     dispatch({
       type: "SET_WISHLIST_USERNAME",
       payload: qname,
     })
   }, [qname]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SET_CART",
+      payload: bgg_id,
+    })
+  }, [bgg_id]);
 
   return (
     <Switch >

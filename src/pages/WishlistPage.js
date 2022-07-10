@@ -16,6 +16,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import { PriorityDropdown } from '../components/PriorityDropdown';
 import { Spinner } from '../components/Spinner';
+import { BooleanParam, withDefault, useQueryParam } from 'use-query-params';
 
 export const ViewSwitch = props => {
   const { wishlist_stores_view, onChange } = props;
@@ -106,6 +107,7 @@ export default () => {
   const { wishlist_priority, wishlist_stores_view, spinner } = useSelector(state => state.pricesReducer);
   const priority_filtered = wishlist.filter(d => parseInt(d.status.wishlistpriority) === wishlist_priority || wishlist_priority === -1);
   const { stock_filtered, store_filtered } = useStep(col => col.filter(d => priority_filtered.map(d => d.id).includes(d.boardgame_id)));
+  const [, setQview] = useQueryParam("stores_view", withDefault(BooleanParam, false));
   let grouped;
 
   if (wishlist_stores_view) {
@@ -143,7 +145,9 @@ export default () => {
                 dispatch({
                   type: "SET_WISHLIST_VIEW",
                   payload: event.target.checked,
-                })
+                });
+
+                setQview(event.target.checked);
               }}
             />
           </Grid>

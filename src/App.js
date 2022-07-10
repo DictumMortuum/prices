@@ -11,7 +11,14 @@ import ComparePage from './pages/ComparePage';
 import { fetchAllPrices } from './api/prices';
 import { fetchStores } from './api/stores';
 import { fetchDate } from './api/date';
-import { NumberParam, StringParam, NumericArrayParam, withDefault, useQueryParam } from 'use-query-params';
+import {
+  BooleanParam,
+  NumberParam,
+  StringParam,
+  NumericArrayParam,
+  withDefault,
+  useQueryParam
+} from 'use-query-params';
 
 export default () => {
   const dispatch = useDispatch();
@@ -19,6 +26,7 @@ export default () => {
   const [bgg_id] = useQueryParam("bgg_id", withDefault(NumericArrayParam, []));
   const [qstock] = useQueryParam("stock", withDefault(NumberParam, 0));
   const [qname] = useQueryParam("bgg_username", StringParam);
+  const [qview] = useQueryParam("stores_view", withDefault(BooleanParam, false));
 
   useEffect(() => {
     dispatch(fetchAllPrices())
@@ -53,6 +61,13 @@ export default () => {
       payload: bgg_id,
     })
   }, [bgg_id]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SET_WISHLIST_VIEW",
+      payload: qview,
+    })
+  }, [qview]);
 
   return (
     <Switch >

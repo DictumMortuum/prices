@@ -6,10 +6,12 @@ import { useStep } from '../hooks/useStep';
 import { pricesToGroups } from './LandingPage';
 import { Spinner } from '../components/Spinner';
 import { pricesToStores, StoresView, WishesView, ViewSwitch } from './WishlistPage';
+import { BooleanParam, withDefault, useQueryParam } from 'use-query-params';
 
 export default () => {
   const { cart_results, wishlist_stores_view, spinner } = useSelector(state => state.pricesReducer);
   const { stock_filtered, store_filtered } = useStep(col => col.filter(d => cart_results.includes(d.boardgame_id)));
+  const [, setQview] = useQueryParam("stores_view", withDefault(BooleanParam, false));
   const dispatch = useDispatch();
   let grouped;
 
@@ -31,10 +33,11 @@ export default () => {
             wishlist_stores_view={wishlist_stores_view}
             onChange={(event) => {
               dispatch({
-
                 type: "SET_WISHLIST_VIEW",
                 payload: event.target.checked,
-              })
+              });
+
+              setQview(event.target.checked);
             }}
           />
         </Grid>

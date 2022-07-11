@@ -4,6 +4,8 @@ import { Typography } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
 import Link from './Link';
 import { makeStyles } from '@material-ui/core/styles';
+import HomeIcon from '@material-ui/icons/Home';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,9 +25,9 @@ export default () => {
 
   return (
     <Breadcrumbs className={classes.root} separator="/" aria-label="breadcrumb">
-      <Link className={classes.color} to={"/"}>
-        <Typography variant="h5">Prices</Typography>
-      </Link>
+      <IconButton className={classes.color} component={Link} to="/">
+        <HomeIcon />
+      </IconButton>
       {args.map(d => (
         <Link key={d} className={classes.color} to={"/item/" + d}>
           <Typography variant="h5" >{d}</Typography>

@@ -11,10 +11,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useSelector } from "react-redux";
 import Link from '../components/Link';
 import Typography from '@material-ui/core/Typography';
-import EmptyImg from './cartoff.svg';
 import Paper from '@material-ui/core/Paper';
 import SearchInput from '../components/SearchInput';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 import packagejs from '../../package.json';
 import Pagination from '@material-ui/lab/Pagination';
@@ -25,7 +23,7 @@ import { ShoppingCart, Favorite, Pageview, Compare } from '@material-ui/icons';
 import { useLogin } from '../hooks/useLogin';
 import { useQueryParam, NumberParam, withDefault } from 'use-query-params';
 import { PriceSlider, PriceSwitch } from '../components/PriceSlider';
-import { useDispatch } from 'react-redux';
+import { Nothing } from '../components/Spinner';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -114,7 +112,8 @@ const CompareButton = () => {
 }
 
 const Bar = props => {
-  const { matches, breadcrumbs, isAuthenticated, cart_results, loginWithRedirect, logout, user } = props;
+  const cart_results = useSelector(state => state.pricesReducer.cart_results);
+  const { matches, breadcrumbs, isAuthenticated, loginWithRedirect, logout, user } = props;
 
   return (
     <Toolbar>
@@ -131,14 +130,6 @@ const Bar = props => {
   )
 }
 
-const Nothing = props => (
-  <Grid container alignContent="center" alignItems="center" direction="column">
-    <Grid item xs={12}>
-      {props.spinner ? <CircularProgress /> : <Typography variant="body1" color="inherit"><img style={{ height: 300 }} alt="" src={EmptyImg} /></Typography>}
-    </Grid>
-  </Grid>
-)
-
 // const minMax = items => {
 //   return items.reduce((acc, val) => {
 //       acc[0] = ( acc[0] === undefined || val < acc[0] ) ? val : acc[0]
@@ -148,58 +139,24 @@ const Nothing = props => (
 // }
 
 const Controls = props => {
-  const { stores, additional_controls, stock_filtered, price_range, enable_price_filter } = props;
+  const { additional_controls, stock_filtered } = props;
   const store_ids = [...new Set(stock_filtered.map(d => d.store_id))];
-  const current_stores = stores.filter(d => store_ids.includes(d.id));
-  const stores_without_stock = stores.filter(d => !store_ids.includes(d.id));
-  const dispatch = useDispatch();
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <StoreDropdown stores={stores_without_stock} current_stores={current_stores} />
+        <StoreDropdown store_ids={store_ids} />
       </Grid>
       <Grid item xs={12}>
         <StockDropdown />
       </Grid>
       <Grid item xs={12}>
-        <PriceSwitch value={enable_price_filter} onChange={(event) => {
-          dispatch({
-            type: "SET_PRICE_FILTER",
-            payload: event.target.checked,
-          });
-        }} />
+        <PriceSwitch />
       </Grid>
       <Grid item xs={12}>
-        <PriceSlider value={price_range} onChange={(event, newValue) => {
-            dispatch({
-              type: "SET_PRICE_RANGE",
-              payload: newValue,
-            });
-          }}
-          disabled={enable_price_filter}
-        />
+        <PriceSlider />
       </Grid>
       { additional_controls !== null && additional_controls }
-    </Grid>
-  );
-}
-
-const Main = props => {
-  const { child_data, page_size, paging, pre_component, store_filtered, component, spinner } = props;
-  const [page, setPage] = useQueryParam('page', withDefault(NumberParam, 1));
-  const page_data = paginate(child_data, page_size, page, paging);
-
-  return (
-    <Grid container spacing={2}>
-      {child_data.length > page_size && paging && <Grid item xs={12}>
-        <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={(event, value) => setPage(value, 'pushIn')} />
-      </Grid>}
-      {pre_component !== undefined && pre_component}
-      {store_filtered.length > 0 ? component(page_data) : <Nothing spinner={spinner} />}
-      {child_data.length > page_size && paging && <Grid item xs={12}>
-        <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={(event, value) => setPage(value, 'pushIn')} />
-      </Grid>}
     </Grid>
   );
 }
@@ -207,11 +164,12 @@ const Main = props => {
 export default props => {
   const classes = useStyles();
   const matches = useMediaQuery(theme => theme.breakpoints.up('md'));
-  const { stores, cart_results, spinner, date, price_range, enable_price_filter } = useSelector(state => state.pricesReducer);
+  const date = useSelector(state => state.pricesReducer.date);
   const { store_filtered, stock_filtered, child_data, component, pre_component, additional_controls, paging=true } = props;
   const page_size = props.page_size || 12;
-  const [page] = useQueryParam('page', withDefault(NumberParam, 1));
+  const [page, setPage] = useQueryParam('page', withDefault(NumberParam, 1));
   const { loginWithRedirect, logout, isAuthenticated, user } = useLogin();
+  const page_data = paginate(child_data, page_size, page, paging);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -220,31 +178,32 @@ export default props => {
   return (
     <Grid container className={classes.root} alignContent="center" alignItems="center">
       <AppBar position="static" className={classes.appbar}>
-        <Bar user={user} breadcrumbs={true} matches={matches} isAuthenticated={isAuthenticated} cart_results={cart_results} loginWithRedirect={loginWithRedirect} logout={logout} />
+        <Bar user={user} breadcrumbs={true} matches={matches} isAuthenticated={isAuthenticated} loginWithRedirect={loginWithRedirect} logout={logout} />
       </AppBar>
 
       <Container maxWidth="xl">
         <Grid container spacing={4} component={MainPaper} className={classes.content}>
           <Grid item md={2} xs={12} component="div">
-            <Controls stock_filtered={stock_filtered} stores={stores} additional_controls={additional_controls} price_range={price_range} enable_price_filter={enable_price_filter} />
+            <Controls stock_filtered={stock_filtered} additional_controls={additional_controls} />
           </Grid>
 
           <Grid item md={10} xs={12} component="div">
-            <Main
-              child_data={child_data}
-              page_size={page_size}
-              paging={paging}
-              pre_component={pre_component}
-              store_filtered={store_filtered}
-              spinner={spinner}
-              component={component}
-            />
+            <Grid container spacing={2}>
+              {child_data.length > page_size && paging && <Grid item xs={12}>
+                <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={(event, value) => setPage(value, 'pushIn')} />
+              </Grid>}
+              {pre_component !== undefined && pre_component}
+              {store_filtered.length > 0 ? component(page_data) : <Nothing />}
+              {child_data.length > page_size && paging && <Grid item xs={12}>
+                <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={(event, value) => setPage(value, 'pushIn')} />
+              </Grid>}
+            </Grid>
           </Grid>
         </Grid>
       </Container>
 
       {!matches && <AppBar position="fixed" className={classes.bottomBar}>
-        <Bar user={user} breadcrumbs={false} matches={!matches} isAuthenticated={isAuthenticated} cart_results={cart_results} loginWithRedirect={loginWithRedirect} logout={logout} />
+        <Bar user={user} breadcrumbs={false} matches={!matches} isAuthenticated={isAuthenticated} loginWithRedirect={loginWithRedirect} logout={logout} />
       </AppBar>}
 
       <Grid item xs={12}>

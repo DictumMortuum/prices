@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 const Component = () => {
   const dispatch = useDispatch();
-  const { search_term } = useSelector(state => state.pricesReducer);
+  const search_term = useSelector(state => state.pricesReducer.search_term);
   const [isSending, setIsSending] = useState(false);
   const history = useHistory();
   const isMounted = useRef(true);

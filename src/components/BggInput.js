@@ -16,9 +16,9 @@ const onChange = dispatch => event => dispatch({
 
 const Component = props => {
   const dispatch = useDispatch();
-  const [isSending, setIsSending] = useState(false)
-  const isMounted = useRef(true)
-  const { wishlist_term } = useSelector(state => state.pricesReducer)
+  const [isSending, setIsSending] = useState(false);
+  const isMounted = useRef(true);
+  const wishlist_term = useSelector(state => state.pricesReducer.wishlist_term);
   const [, setQname] = useQueryParam("bgg_username", StringParam);
 
   // set isMounted to false when we unmount the component

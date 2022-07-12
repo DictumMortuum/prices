@@ -18,8 +18,11 @@ const filterStores = col => {
 }
 
 export default props => {
-  const { stores, current_stores } = props;
-  const { store } = useSelector(state => state.pricesReducer)
+  const { store_ids } = props;
+  const store = useSelector(state => state.pricesReducer.store);
+  const stores = useSelector(state => state.pricesReducer.stores);
+  const current_stores = stores.filter(d => store_ids.includes(d.id));
+  const stores_without_stock = stores.filter(d => !store_ids.includes(d.id));
   const dispatch = useDispatch();
   const [, setQstore] = useQueryParam("store", NumericArrayParam);
 
@@ -46,7 +49,7 @@ export default props => {
         <ListSubheader style={{ background: "white" }}>With Stock</ListSubheader>
         {current_stores.map(d => <MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>)}
         <ListSubheader style={{ background: "white" }}>Rest</ListSubheader>
-        {stores.map(d => <MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>)}
+        {stores_without_stock.map(d => <MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>)}
       </Select>
     </FormControl>
   )

@@ -72,7 +72,7 @@ const Media = props => {
 
 export default props => {
   const classes = useStyles();
-  const { stores } = useSelector(state => state.pricesReducer);
+  const stores = useSelector(state => state.pricesReducer.stores);
   const { url, name, store_id, price, stock } = props.boardgame;
   const self = window.location.href;
 

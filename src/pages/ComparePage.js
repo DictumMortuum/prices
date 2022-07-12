@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useStep } from '../hooks/useStep';
 
 export default () => {
-  const { cart_results } = useSelector(state => state.pricesReducer);
+  const cart_results = useSelector(state => state.pricesReducer.cart_results);
   const { store_filtered, stock_filtered } = useStep(() => cart_results);
 
   return (

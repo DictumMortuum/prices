@@ -96,9 +96,10 @@ const domain = col => {
 export default props => {
   const classes = useStyles();
   const { history } = props;
-  const { store, stock } = useSelector(state => state.pricesReducer)
-  const p = history.filter(stockFilter(stock)).filter(storeFilter(store))
-  const processed = transform(p).sort((a, b) => b.cr_date - a.cr_date)
+  const store = useSelector(state => state.pricesReducer.store);
+  const stock = useSelector(state => state.pricesReducer.stock);
+  const p = history.filter(stockFilter(stock)).filter(storeFilter(store));
+  const processed = transform(p).sort((a, b) => b.cr_date - a.cr_date);
 
   return (
      <Paper className={classes.root}>

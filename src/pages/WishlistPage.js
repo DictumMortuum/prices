@@ -104,7 +104,9 @@ export const StoresView = wishlist => data => data.map(store => (
 export default () => {
   const wishlist = useWishlist();
   const dispatch = useDispatch();
-  const { wishlist_priority, wishlist_stores_view, spinner } = useSelector(state => state.pricesReducer);
+  const wishlist_priority = useSelector(state => state.pricesReducer.wishlist_priority);
+  const wishlist_stores_view = useSelector(state => state.pricesReducer.wishlist_stores_view);
+  const spinner = useSelector(state => state.pricesReducer.spinner);
   const priority_filtered = wishlist.filter(d => parseInt(d.status.wishlistpriority) === wishlist_priority || wishlist_priority === -1);
   const { stock_filtered, store_filtered } = useStep(col => col.filter(d => priority_filtered.map(d => d.id).includes(d.boardgame_id)));
   const [, setQview] = useQueryParam("stores_view", withDefault(BooleanParam, false));

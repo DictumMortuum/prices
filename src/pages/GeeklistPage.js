@@ -12,7 +12,7 @@ import { Spinner } from '../components/Spinner';
 export default () => {
   const geeklist_id = useId();
   const geeklist = useGeeklist(geeklist_id);
-  const { spinner } = useSelector(state => state.pricesReducer);
+  const spinner = useSelector(state => state.pricesReducer.spinner);
   const { stock_filtered, store_filtered } = useStep(col => col.filter(d => geeklist.includes(d.boardgame_id)));
   const grouped = pricesToGroups(store_filtered);
 

@@ -4,6 +4,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Switch from '@material-ui/core/Switch';
+import { useDispatch, useSelector } from 'react-redux';
 
 const marks = [
   {
@@ -33,26 +34,34 @@ const marks = [
 ];
 
 export const PriceSlider = props => {
-  const { onChange, value, disabled } = props;
+  const dispatch = useDispatch();
+  const enable_price_filter = useSelector(state => state.pricesReducer.enable_price_filter);
+  const price_range = useSelector(state => state.pricesReducer.price_range);
   const [min, max] = [0, 500];
 
   return (
     <Slider
       min={min}
       max={max}
-      value={value}
-      onChange={onChange}
+      value={price_range}
+      onChange={(event, newValue) => {
+        dispatch({
+          type: "SET_PRICE_RANGE",
+          payload: newValue,
+        });
+      }}
       aria-labelledby="range-slider"
       getAriaValueText={v => `€${v}`}
       marks={marks}
       valueLabelDisplay="auto"
-      disabled={!disabled}
+      disabled={!enable_price_filter}
     />
   );
 }
 
 export const PriceSwitch = props => {
-  const { enable_price_filter, onChange } = props;
+  const dispatch = useDispatch();
+  const enable_price_filter = useSelector(state => state.pricesReducer.enable_price_filter);
 
   return (
     <FormControl component="fieldset">
@@ -61,7 +70,12 @@ export const PriceSwitch = props => {
           control={
             <Switch
               checked={enable_price_filter}
-              onChange={onChange}
+              onChange={(event) => {
+                dispatch({
+                  type: "SET_PRICE_FILTER",
+                  payload: event.target.checked,
+                });
+              }}
             />
           }
           label="Price Filter"

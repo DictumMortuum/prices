@@ -10,7 +10,11 @@ export const storeFilter = store => d => {
 export const stockFilter = stock => d => d.stock === stock || stock === -1
 
 export const useStep = f => {
-  const { store, stock, prices, price_range, enable_price_filter } = useSelector(state => state.pricesReducer)
+  const store = useSelector(state => state.pricesReducer.store);
+  const stock = useSelector(state => state.pricesReducer.stock);
+  const prices = useSelector(state => state.pricesReducer.prices);
+  const price_range = useSelector(state => state.pricesReducer.price_range);
+  const enable_price_filter = useSelector(state => state.pricesReducer.enable_price_filter);
   const [min, max] = price_range;
   const page_filtered = f !== undefined ? f(prices) : prices
   const range_filtered = enable_price_filter? page_filtered.filter(d => d.price < max && d.price > min) : page_filtered;

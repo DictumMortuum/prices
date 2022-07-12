@@ -9,7 +9,9 @@ import { pricesToStores, StoresView, WishesView, ViewSwitch } from './WishlistPa
 import { BooleanParam, withDefault, useQueryParam } from 'use-query-params';
 
 export default () => {
-  const { cart_results, wishlist_stores_view, spinner } = useSelector(state => state.pricesReducer);
+  const cart_results = useSelector(state => state.pricesReducer.cart_results);
+  const wishlist_stores_view = useSelector(state => state.pricesReducer.wishlist_stores_view);
+  const spinner = useSelector(state => state.pricesReducer.spinner);
   const { stock_filtered, store_filtered } = useStep(col => col.filter(d => cart_results.includes(d.boardgame_id)));
   const [, setQview] = useQueryParam("stores_view", withDefault(BooleanParam, false));
   const dispatch = useDispatch();

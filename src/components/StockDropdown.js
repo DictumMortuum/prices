@@ -8,7 +8,7 @@ import { NumberParam, useQueryParam } from 'use-query-params';
 
 export default () => {
   const stocks = ["In stock", "Preorder", "Out of stock"];
-  const { stock } = useSelector(state => state.pricesReducer);
+  const stock = useSelector(state => state.pricesReducer.stock);
   const dispatch = useDispatch();
   const [, setQstock] = useQueryParam("stock", NumberParam);
 

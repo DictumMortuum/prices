@@ -8,7 +8,9 @@ import { useSelector } from "react-redux";
 import fuse from 'fuse.js';
 
 const searchFilter = col => {
-  const { search_term, search_enabled, search_results } = useSelector(state => state.pricesReducer)
+  const search_term = useSelector(state => state.pricesReducer.search_term);
+  const search_enabled = useSelector(state => state.pricesReducer.search_enabled);
+  const search_results = useSelector(state => state.pricesReducer.search_results);
 
   if(search_term !== "" && search_enabled) {
     const options = {

@@ -16,7 +16,7 @@ const req = name => fetch(`${bgg_xmlapi2}/collection?username=${encodeURICompone
 export const fetchWishList = (name, retries) => pRetry(async () => req(name), { onFailedAttempt: logError, retries })
 
 export const useWishlist = () => {
-  const { wishlist } = useSelector(state => state.pricesReducer)
+  const wishlist = useSelector(state => state.pricesReducer.wishlist);
   const [username] = useQueryParam("bgg_username", StringParam);
   const dispatch = useDispatch();
 

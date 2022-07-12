@@ -24,6 +24,8 @@ import Avatar from '@material-ui/core/Avatar';
 import { ShoppingCart, Favorite, Pageview, Compare } from '@material-ui/icons';
 import { useLogin } from '../hooks/useLogin';
 import { useQueryParam, NumberParam, withDefault } from 'use-query-params';
+import { PriceSlider, PriceSwitch } from '../components/PriceSlider';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -137,11 +139,20 @@ const Nothing = props => (
   </Grid>
 )
 
+// const minMax = items => {
+//   return items.reduce((acc, val) => {
+//       acc[0] = ( acc[0] === undefined || val < acc[0] ) ? val : acc[0]
+//       acc[1] = ( acc[1] === undefined || val > acc[1] ) ? val : acc[1]
+//       return acc;
+//   }, []);
+// }
+
 const Controls = props => {
-  const { stores, additional_controls, stock_filtered } = props;
+  const { stores, additional_controls, stock_filtered, price_range, enable_price_filter } = props;
   const store_ids = [...new Set(stock_filtered.map(d => d.store_id))];
   const current_stores = stores.filter(d => store_ids.includes(d.id));
   const stores_without_stock = stores.filter(d => !store_ids.includes(d.id));
+  const dispatch = useDispatch();
 
   return (
     <Grid container spacing={2}>
@@ -150,6 +161,24 @@ const Controls = props => {
       </Grid>
       <Grid item xs={12}>
         <StockDropdown />
+      </Grid>
+      <Grid item xs={12}>
+        <PriceSwitch value={enable_price_filter} onChange={(event) => {
+          dispatch({
+            type: "SET_PRICE_FILTER",
+            payload: event.target.checked,
+          });
+        }} />
+      </Grid>
+      <Grid item xs={12}>
+        <PriceSlider value={price_range} onChange={(event, newValue) => {
+            dispatch({
+              type: "SET_PRICE_RANGE",
+              payload: newValue,
+            });
+          }}
+          disabled={enable_price_filter}
+        />
       </Grid>
       { additional_controls !== null && additional_controls }
     </Grid>
@@ -178,7 +207,7 @@ const Main = props => {
 export default props => {
   const classes = useStyles();
   const matches = useMediaQuery(theme => theme.breakpoints.up('md'));
-  const { stores, cart_results, spinner, date } = useSelector(state => state.pricesReducer);
+  const { stores, cart_results, spinner, date, price_range, enable_price_filter } = useSelector(state => state.pricesReducer);
   const { store_filtered, stock_filtered, child_data, component, pre_component, additional_controls, paging=true } = props;
   const page_size = props.page_size || 12;
   const [page] = useQueryParam('page', withDefault(NumberParam, 1));
@@ -197,7 +226,7 @@ export default props => {
       <Container maxWidth="xl">
         <Grid container spacing={4} component={MainPaper} className={classes.content}>
           <Grid item md={2} xs={12} component="div">
-            <Controls stock_filtered={stock_filtered} stores={stores} additional_controls={additional_controls} />
+            <Controls stock_filtered={stock_filtered} stores={stores} additional_controls={additional_controls} price_range={price_range} enable_price_filter={enable_price_filter} />
           </Grid>
 
           <Grid item md={10} xs={12} component="div">

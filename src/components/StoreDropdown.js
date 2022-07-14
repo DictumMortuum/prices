@@ -27,7 +27,7 @@ export default props => {
   const [, setQstore] = useQueryParam("store", NumericArrayParam);
 
   return (
-    <FormControl variant="outlined" fullWidth style={{ maxWidth: 280 }}>
+    <FormControl variant="outlined" fullWidth>
       <InputLabel htmlFor="store-select-label">Store</InputLabel>
       <Select
         labelId="store-select-label"

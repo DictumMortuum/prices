@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
   },
+  paper: {
+    width: 280,
+  }
 }));
 
 export default function SwipeableTemporaryDrawer(props) {
@@ -22,7 +25,7 @@ export default function SwipeableTemporaryDrawer(props) {
   const classes = useStyles();
 
   return (
-    <Drawer anchor="left" open={open} onClose={handleDrawerClose}>
+    <Drawer anchor="left" open={open} onClose={handleDrawerClose} classes={{ paper: classes.paper }}>
       <div className={classes.drawerHeader}>
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}

@@ -24,6 +24,7 @@ import { useLogin } from '../hooks/useLogin';
 import { useQueryParam, NumberParam, withDefault } from 'use-query-params';
 import { PriceSlider, PriceSwitch } from '../components/PriceSlider';
 import { Nothing } from '../components/Spinner';
+import { BestPriceSwitch } from '../components/BestPriceSwitch';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -155,6 +156,9 @@ const Controls = props => {
       </Grid>
       <Grid item xs={12}>
         <PriceSlider />
+      </Grid>
+      <Grid item xs={12}>
+        <BestPriceSwitch />
       </Grid>
       { additional_controls !== null && additional_controls }
     </Grid>

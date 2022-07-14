@@ -13,6 +13,7 @@ export const reducer = (state = {}, action) => {
         wishlist_priority: -1,
         wishlist_stores_view: false,
         enable_price_filter: false,
+        enable_best_price: false,
         wishlist: [],
         prices: [],
         price_range: [0, 200],
@@ -75,6 +76,11 @@ export const reducer = (state = {}, action) => {
       return {
         ...state,
         enable_price_filter: action.payload
+      }
+    case "SET_BEST_PRICE":
+      return {
+        ...state,
+        enable_best_price: action.payload
       }
     case "SET_SEARCH_TERM":
       return {

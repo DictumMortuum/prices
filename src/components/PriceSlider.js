@@ -6,33 +6,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Switch from '@material-ui/core/Switch';
 import { useDispatch, useSelector } from 'react-redux';
 
-const marks = [
-  {
-    value: 0,
-    label: '€0',
-  },
-  {
-    value: 100,
-    label: '€100',
-  },
-  {
-    value: 200,
-    label: '€200',
-  },
-  {
-    value: 300,
-    label: '€300',
-  },
-  {
-    value: 400,
-    label: '€400',
-  },
-  {
-    value: 500,
-    label: '€500',
-  },
-];
-
 export const PriceSlider = props => {
   const dispatch = useDispatch();
   const enable_price_filter = useSelector(state => state.pricesReducer.enable_price_filter);
@@ -51,8 +24,6 @@ export const PriceSlider = props => {
         });
       }}
       aria-labelledby="range-slider"
-      getAriaValueText={v => `€${v}`}
-      marks={marks}
       valueLabelDisplay="auto"
       disabled={!enable_price_filter}
     />

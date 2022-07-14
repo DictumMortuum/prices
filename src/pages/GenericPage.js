@@ -25,6 +25,10 @@ import { useQueryParam, NumberParam, withDefault } from 'use-query-params';
 import { PriceSlider, PriceSwitch } from '../components/PriceSlider';
 import { Nothing } from '../components/Spinner';
 import { BestPriceSwitch } from '../components/BestPriceSwitch';
+import SwipeableTemporaryDrawer from '../components/Drawer';
+import MenuIcon from '@material-ui/icons/Menu';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -112,13 +116,38 @@ const CompareButton = () => {
   )
 }
 
+const DrawerButton = props => {
+  const { handleDrawerOpen } = props;
+
+  return (
+    <IconButton color="inherit" aria-label="open drawer" onClick={handleDrawerOpen} edge="start">
+      <MenuIcon />
+    </IconButton>
+  )
+}
+
 const Bar = props => {
   const cart_results = useSelector(state => state.pricesReducer.cart_results);
-  const { matches, breadcrumbs, isAuthenticated, loginWithRedirect, logout, user } = props;
+  const { children, matches, breadcrumbs, isAuthenticated, loginWithRedirect, logout, user } = props;
+  const [open, setOpen] = React.useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Toolbar>
-      { breadcrumbs && <Breadcrumbs />}
+      { breadcrumbs && <Fragment>
+        <DrawerButton handleDrawerOpen={handleDrawerOpen} />
+        <SwipeableTemporaryDrawer open={open} handleDrawerClose={handleDrawerClose}>
+          {children}
+        </SwipeableTemporaryDrawer>
+        <Breadcrumbs />
+      </Fragment>}
       { matches && <Fragment>
         <SearchInput />
         <SearchButton />
@@ -144,25 +173,25 @@ const Controls = props => {
   const store_ids = [...new Set(stock_filtered.map(d => d.store_id))];
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
+    <List>
+      <ListItem>
         <StoreDropdown store_ids={store_ids} />
-      </Grid>
-      <Grid item xs={12}>
+      </ListItem>
+      <ListItem>
         <StockDropdown />
-      </Grid>
-      <Grid item xs={12}>
+      </ListItem>
+      <ListItem>
         <PriceSwitch />
-      </Grid>
-      <Grid item xs={12}>
+      </ListItem>
+      <ListItem>
         <PriceSlider />
-      </Grid>
-      <Grid item xs={12}>
+      </ListItem>
+      <ListItem>
         <BestPriceSwitch />
-      </Grid>
+      </ListItem>
       { additional_controls !== null && additional_controls }
-    </Grid>
-  );
+    </List>
+  )
 }
 
 export default props => {
@@ -182,16 +211,14 @@ export default props => {
   return (
     <Grid container className={classes.root} alignContent="center" alignItems="center">
       <AppBar position="static" className={classes.appbar}>
-        <Bar user={user} breadcrumbs={true} matches={matches} isAuthenticated={isAuthenticated} loginWithRedirect={loginWithRedirect} logout={logout} />
+        <Bar user={user} breadcrumbs={true} matches={matches} isAuthenticated={isAuthenticated} loginWithRedirect={loginWithRedirect} logout={logout}>
+          <Controls stock_filtered={stock_filtered} additional_controls={additional_controls} />
+        </Bar>
       </AppBar>
 
       <Container maxWidth="xl">
         <Grid container spacing={4} component={MainPaper} className={classes.content}>
-          <Grid item md={2} xs={12} component="div">
-            <Controls stock_filtered={stock_filtered} additional_controls={additional_controls} />
-          </Grid>
-
-          <Grid item md={10} xs={12} component="div">
+          <Grid item md={12} xs={12} component="div">
             <Grid container spacing={2}>
               {child_data.length > page_size && paging && <Grid item xs={12}>
                 <Pagination variant="outlined" shape="rounded" count={pages(child_data, page_size)} page={page} onChange={(event, value) => setPage(value, 'pushIn')} />

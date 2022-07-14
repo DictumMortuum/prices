@@ -1,5 +1,4 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
 import GenericPage from './GenericPage';
 import { useDispatch, useSelector } from "react-redux";
 import { useStep } from '../hooks/useStep';
@@ -7,6 +6,7 @@ import { pricesToGroups } from './LandingPage';
 import { Spinner } from '../components/Spinner';
 import { pricesToStores, StoresView, WishesView, ViewSwitch } from './WishlistPage';
 import { BooleanParam, withDefault, useQueryParam } from 'use-query-params';
+import ListItem from '@material-ui/core/ListItem';
 
 export default () => {
   const cart_results = useSelector(state => state.pricesReducer.cart_results);
@@ -30,7 +30,7 @@ export default () => {
       store_filtered={store_filtered}
       page_name="/cart"
       additional_controls={
-        <Grid item xs={12}>
+        <ListItem>
           <ViewSwitch
             wishlist_stores_view={wishlist_stores_view}
             onChange={(event) => {
@@ -42,7 +42,7 @@ export default () => {
               setQview(event.target.checked);
             }}
           />
-        </Grid>
+        </ListItem>
       }
       component={data => spinner ? <Spinner /> : wishlist_stores_view ? StoresView(cart_results.map(d => ({id: d})))(data) : WishesView(data)}
     />

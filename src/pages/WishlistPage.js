@@ -17,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import { PriorityDropdown } from '../components/PriorityDropdown';
 import { Spinner } from '../components/Spinner';
 import { BooleanParam, withDefault, useQueryParam } from 'use-query-params';
+import ListItem from '@material-ui/core/ListItem';
 
 export const ViewSwitch = props => {
   const { wishlist_stores_view, onChange } = props;
@@ -126,10 +127,10 @@ export default () => {
       page_name="/wishlist"
       additional_controls={
         <React.Fragment>
-          <Grid item xs={12}>
+          <ListItem>
             <BggInput />
-          </Grid>
-          <Grid item xs={12}>
+          </ListItem>
+          <ListItem>
             <PriorityDropdown
               wishlist_priority={wishlist_priority}
               onChange={(event) => {
@@ -139,8 +140,8 @@ export default () => {
                 })
               }}
             />
-          </Grid>
-          <Grid item xs={12}>
+          </ListItem>
+          <ListItem>
             <ViewSwitch
               wishlist_stores_view={wishlist_stores_view}
               onChange={(event) => {
@@ -152,7 +153,7 @@ export default () => {
                 setQview(event.target.checked);
               }}
             />
-          </Grid>
+          </ListItem>
         </React.Fragment>
       }
       component={data => spinner ? <Spinner /> : wishlist_stores_view ? StoresView(wishlist)(data) : WishesView(data)}

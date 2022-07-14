@@ -216,7 +216,7 @@ export default props => {
         </Bar>
       </AppBar>
 
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Grid container spacing={4} component={MainPaper} className={classes.content}>
           <Grid item md={12} xs={12} component="div">
             <Grid container spacing={2}>

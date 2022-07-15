@@ -15,7 +15,7 @@ import { NumericArrayParam, withDefault, useQueryParam } from 'use-query-params'
 
 const useStyles = makeStyles((theme) => ({
   card_header: {
-    minHeight: 140,
+    minHeight: 120,
   },
   price: {
     marginLeft: "auto",

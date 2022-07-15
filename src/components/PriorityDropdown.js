@@ -3,9 +3,11 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
+import { useSelector, useDispatch } from 'react-redux';
 
 export const PriorityDropdown = props => {
-  const { onChange, wishlist_priority } = props;
+  const dispatch = useDispatch();
+  const wishlist_priority = useSelector(state => state.pricesReducer.wishlist_priority);
 
   return (
     <FormControl variant="outlined" fullWidth>
@@ -14,7 +16,12 @@ export const PriorityDropdown = props => {
         labelId="priority-select-label"
         id="priority-select"
         value={wishlist_priority}
-        onChange={onChange}
+        onChange={(event) => {
+          dispatch({
+            type: "SET_PRIORITY",
+            payload: event.target.value
+          })
+        }}
       >
         <MenuItem key={-1} value={-1}>All priorities</MenuItem>
         {[1,2,3,4,5].map(d => (

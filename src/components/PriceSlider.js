@@ -49,7 +49,6 @@ export const PriceSwitch = props => {
               }}
             />
           }
-          label="Price Filter"
         />
       </FormGroup>
     </FormControl>

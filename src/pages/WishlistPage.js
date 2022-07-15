@@ -3,41 +3,13 @@ import { Grid } from '@material-ui/core';
 import CompareCard from '../components/CompareCard';
 import BoardgameCard from '../components/BoardgameCard';
 import GenericPage from './GenericPage';
-import { useDispatch, useSelector } from "react-redux";
-import BggInput from '../components/BggInput';
+import { useSelector } from "react-redux";
 import { useWishlist } from '../hooks/useWishlist';
 import { useStep } from '../hooks/useStep';
 import { useStore } from '../hooks/useStore';
-import FormControl from '@material-ui/core/FormControl';
 import { pricesToGroups } from './LandingPage';
-import Switch from '@material-ui/core/Switch';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
-import { PriorityDropdown } from '../components/PriorityDropdown';
 import { Spinner } from '../components/Spinner';
-import { BooleanParam, withDefault, useQueryParam } from 'use-query-params';
-import ListItem from '@material-ui/core/ListItem';
-
-export const ViewSwitch = props => {
-  const { wishlist_stores_view, onChange } = props;
-
-  return (
-    <FormControl component="fieldset">
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={wishlist_stores_view}
-              onChange={onChange}
-            />
-          }
-          label="Stores view"
-        />
-      </FormGroup>
-    </FormControl>
-  )
-}
 
 const sumPrices = col => col.reduce((prev, curr) => {
   return prev + curr.price;
@@ -104,13 +76,12 @@ export const StoresView = wishlist => data => data.map(store => (
 
 export default () => {
   const wishlist = useWishlist();
-  const dispatch = useDispatch();
-  const wishlist_priority = useSelector(state => state.pricesReducer.wishlist_priority);
   const wishlist_stores_view = useSelector(state => state.pricesReducer.wishlist_stores_view);
+  const wishlist_priority = useSelector(state => state.pricesReducer.wishlist_priority);
   const spinner = useSelector(state => state.pricesReducer.spinner);
   const priority_filtered = wishlist.filter(d => parseInt(d.status.wishlistpriority) === wishlist_priority || wishlist_priority === -1);
   const { stock_filtered, store_filtered } = useStep(col => col.filter(d => priority_filtered.map(d => d.id).includes(d.boardgame_id)));
-  const [, setQview] = useQueryParam("stores_view", withDefault(BooleanParam, false));
+
   let grouped;
 
   if (wishlist_stores_view) {
@@ -125,37 +96,6 @@ export default () => {
       stock_filtered={stock_filtered}
       store_filtered={store_filtered}
       page_name="/wishlist"
-      additional_controls={
-        <React.Fragment>
-          <ListItem>
-            <BggInput />
-          </ListItem>
-          <ListItem>
-            <PriorityDropdown
-              wishlist_priority={wishlist_priority}
-              onChange={(event) => {
-                dispatch({
-                  type: "SET_PRIORITY",
-                  payload: event.target.value
-                })
-              }}
-            />
-          </ListItem>
-          <ListItem>
-            <ViewSwitch
-              wishlist_stores_view={wishlist_stores_view}
-              onChange={(event) => {
-                dispatch({
-                  type: "SET_WISHLIST_VIEW",
-                  payload: event.target.checked,
-                });
-
-                setQview(event.target.checked);
-              }}
-            />
-          </ListItem>
-        </React.Fragment>
-      }
       component={data => spinner ? <Spinner /> : wishlist_stores_view ? StoresView(wishlist)(data) : WishesView(data)}
     />
   )

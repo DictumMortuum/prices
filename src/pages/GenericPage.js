@@ -29,6 +29,11 @@ import SwipeableTemporaryDrawer from '../components/Drawer';
 import MenuIcon from '@material-ui/icons/Menu';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import { ViewSwitch } from '../components/ViewSwitch';
+import { PriorityDropdown } from '../components/PriorityDropdown';
+import BggInput from '../components/BggInput';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -177,18 +182,43 @@ const Controls = props => {
       <ListItem>
         <StoreDropdown store_ids={store_ids} />
       </ListItem>
+
       <ListItem>
         <StockDropdown />
       </ListItem>
+
       <ListItem>
-        <PriceSwitch />
+        <ListItemText primary="Enable best prices" />
+        <ListItemSecondaryAction>
+          <BestPriceSwitch />
+        </ListItemSecondaryAction>
+      </ListItem>
+
+      <ListItem>
+        <ListItemText primary="Enable stores view" />
+        <ListItemSecondaryAction>
+          <ViewSwitch />
+        </ListItemSecondaryAction>
+      </ListItem>
+
+      <ListItem>
+        <ListItemText primary="Enable price filter" />
+        <ListItemSecondaryAction>
+          <PriceSwitch />
+        </ListItemSecondaryAction>
       </ListItem>
       <ListItem>
         <PriceSlider />
       </ListItem>
+
       <ListItem>
-        <BestPriceSwitch />
+        <BggInput />
       </ListItem>
+
+      <ListItem>
+        <PriorityDropdown />
+      </ListItem>
+
       { additional_controls !== null && additional_controls }
     </List>
   )

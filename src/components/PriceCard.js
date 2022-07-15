@@ -4,7 +4,7 @@ import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
 import Link from './Link';
-import { useSelector } from "react-redux";
+import { useStore } from '../hooks/useStore';
 import { Typography } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -72,9 +72,9 @@ const Media = props => {
 
 export default props => {
   const classes = useStyles();
-  const stores = useSelector(state => state.pricesReducer.stores);
   const { url, name, store_id, price, stock } = props.boardgame;
   const self = window.location.href;
+  const store = useStore(store_id);
 
   return (
     <Card className={classNames({[classes.out_of_stock]: stock === 2})}>
@@ -112,7 +112,7 @@ export default props => {
       </CardActions>
       <CardContent className={classes.card_header}>
         <Typography variant="subtitle1" color="textSecondary">
-          {stores.filter(d => d.id === store_id).map(d => d.name)}
+          {store.name}
         </Typography>
         <Typography variant="subtitle1" color="textSecondary">
           €{price}

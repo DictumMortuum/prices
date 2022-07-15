@@ -10,12 +10,17 @@ import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import { useDispatch } from "react-redux";
+import { useStore } from '../hooks/useStore';
 import { NumericArrayParam, withDefault, useQueryParam } from 'use-query-params';
 
 const useStyles = makeStyles((theme) => ({
   card_header: {
-    minHeight: 120,
+    minHeight: 140,
   },
+  price: {
+    marginLeft: "auto",
+    marginRight: theme.spacing(2),
+  }
 }));
 
 const onClick = (dispatch, setBggId) => (boardgame_id, bgg_ids) => {
@@ -29,6 +34,17 @@ const onClick = (dispatch, setBggId) => (boardgame_id, bgg_ids) => {
   } else {
     setBggId([...bgg_ids, boardgame_id])
   }
+}
+
+const StoreName = props => {
+  const { store_id } = props;
+  const store = useStore(store_id);
+
+  return (
+    <Typography variant="subtitle1" color="textSecondary">
+      {store.name}
+    </Typography>
+  )
 }
 
 export default props => {
@@ -63,17 +79,18 @@ export default props => {
         {rank < 999999 && <Typography variant="subtitle1" color="textSecondary">
           BGG Rank {rank}
         </Typography>}
-        <Typography variant="subtitle1" color="textSecondary">
-          {lowest && "€" + lowest.price} {highest && "- €" + highest.price}
-        </Typography>
+        {available_prices.length === 1 && <StoreName {...available_prices[0]} />}
         <Typography variant="subtitle1">
           {boardgame_name}
         </Typography>
       </CardContent>
-      <CardActions>
+      <CardActions disableSpacing>
         <IconButton onClick={() => onClick(dispatch, setBggId)(boardgame_id, bgg_ids)}>
           <AddShoppingCartIcon />
         </IconButton>
+        <Typography variant="subtitle1" color="textSecondary" className={classes.price}>
+          {lowest && "€" + lowest.price} {highest && "- €" + highest.price}
+        </Typography>
       </CardActions>
     </Card>
   )

@@ -27,6 +27,10 @@ export default () => {
   const [qstock] = useQueryParam("stock", withDefault(NumberParam, 0));
   const [qname] = useQueryParam("bgg_username", StringParam);
   const [qview] = useQueryParam("stores_view", withDefault(BooleanParam, false));
+  const [qpricef] = useQueryParam("price_filter", withDefault(BooleanParam, false));
+  const [qbest] = useQueryParam("best_prices", withDefault(BooleanParam, false));
+  const [min] = useQueryParam("min", withDefault(NumberParam, 0));
+  const [max] = useQueryParam("max", withDefault(NumberParam, 500));
 
   useEffect(() => {
     dispatch(fetchAllPrices())
@@ -68,6 +72,25 @@ export default () => {
       payload: qview,
     })
   }, [qview]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SET_PRICE_FILTER",
+      payload: qpricef,
+    })
+
+    dispatch({
+      type: "SET_PRICE_RANGE",
+      payload: [min, max],
+    })
+  }, [min, max, qpricef]);
+
+  useEffect(() => {
+    dispatch({
+      type: "SET_BEST_PRICE",
+      payload: qbest,
+    })
+  }, [qbest]);
 
   return (
     <Switch >

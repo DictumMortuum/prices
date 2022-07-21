@@ -22,5 +22,5 @@ export const useGeeklist = geeklist_id => {
     })
   }, [geeklist_id])
 
-  return items
+  return items.filter(d => d.id)
 }

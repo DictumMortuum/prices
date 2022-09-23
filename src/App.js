@@ -8,6 +8,7 @@ import SearchPage from './pages/SearchPage';
 import GeeklistPage from './pages/GeeklistPage';
 import WishlistPage from './pages/WishlistPage';
 import ComparePage from './pages/ComparePage';
+import MathtradePage from './pages/MathtradePage';
 import { fetchAllPrices } from './api/prices';
 import { fetchStores } from './api/stores';
 import { fetchDate } from './api/date';
@@ -105,6 +106,9 @@ export default () => {
       </Route>
       <Route path={`/wishlist`} exact>
         <WishlistPage />
+      </Route>
+      <Route path={`/mathtrade`} exact>
+        <MathtradePage />
       </Route>
       <Route path={`/geeklist/:geeklist_id`}>
         <GeeklistPage />

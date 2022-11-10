@@ -107,7 +107,7 @@ export default () => {
       <Route path={`/wishlist`} exact>
         <WishlistPage />
       </Route>
-      <Route path={`/mathtrade`} exact>
+      <Route path={`/mathtrade/:mathtrade_id`} exact>
         <MathtradePage />
       </Route>
       <Route path={`/geeklist/:geeklist_id`}>

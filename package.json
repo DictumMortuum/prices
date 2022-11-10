@@ -1,6 +1,6 @@
 {
   "name": "prices",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "private": true,
   "homepage": "https://prices.dictummortuum.com",
   "dependencies": {

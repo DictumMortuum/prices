@@ -145,7 +145,7 @@ const Content = props => {
     });
   }, []);
 
-  if (user === undefined) {
+  if (user === undefined || play === null) {
     return <></>
   }
 

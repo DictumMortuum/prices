@@ -39,10 +39,11 @@ const onClick = (dispatch, setBggId) => (boardgame_id, bgg_ids) => {
 const StoreName = props => {
   const { store_id } = props;
   const store = useStore(store_id);
+  const name = store.name === undefined ? "" : store.name;
 
   return (
     <Typography variant="subtitle1" color="textSecondary">
-      {store.name}
+      {name}
     </Typography>
   )
 }

@@ -56,7 +56,7 @@ ReactDOM.render(
     <HashRouter>
       <Provider store={store}>
         <Route path="/">
-          <Auth0Provider domain="dev-11hy0hqn.us.auth0.com" clientId="gEd77V5i5uBswawxfycFKL1eEv8BlhdE" redirectUri={window.location.origin}>
+          <Auth0Provider domain="dev-11hy0hqn.us.auth0.com" clientId="gEd77V5i5uBswawxfycFKL1eEv8BlhdE" redirectUri={window.location.href}>
             <QueryParamProvider ReactRouterRoute={Route} stringifyOptions={queryStringifyOptions}>
               <App />
             </QueryParamProvider>

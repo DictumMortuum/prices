@@ -114,6 +114,9 @@ export default () => {
       <Route path={`/play/:play_id`} exact>
         <PlayPage />
       </Route>
+      <Route path={`/play/:play_id/results`} exact>
+        <PlayPage results={true} />
+      </Route>
       <Route path={`/geeklist/:geeklist_id`}>
         <GeeklistPage />
       </Route>

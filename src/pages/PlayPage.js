@@ -160,12 +160,87 @@ const Content = props => {
   )
 }
 
+const Results = props => {
+  const { id } = props;
+  const [play, setPlay] = useState(null);
+  const [votes, setVotes] = useState([]);
+  const classes = useStyles();
+
+  useEffect(() => {
+    fetch(`${url}/plays/${id}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(rs => rs.json()).then(rs => {
+      setPlay(rs);
+    });
+  }, []);
+
+  useEffect(() => {
+    fetch(`${url}/play-votes`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(rs => rs.json()).then(rs => {
+      setVotes(rs);
+    });
+  }, []);
+
+  if (play === null || votes.length === 0) {
+    return <></>
+  }
+
+  const m = [];
+
+  votes.map(d => {
+    const [boardgame_id, play, email] = d.key.split("-");
+
+    if(m[boardgame_id] === undefined) {
+      m[boardgame_id] = {
+        boardgame_id,
+        grade: 0,
+        src: `https://raw.githubusercontent.com/DictumMortuum/json-api/master/rest/v1/boardgames/${boardgame_id}/image.avif`,
+        emails: [],
+      };
+    }
+
+    if(id === play) {
+      m[boardgame_id].grade += d.grade;
+      m[boardgame_id].emails.push(email);
+    }
+
+    return d;
+  });
+
+  const rs = [];
+
+  play.boardgames.map(d => {
+    rs.push(m[d]);
+    return d;
+  })
+
+  console.log(rs.sort((a, b) => b.grade - a.grade))
+
+  return (
+    <Grid container justifyContent="center" style={{ textAlign: "center" }} spacing={2}>
+      {rs.map((d, i) => (
+        <Grid key={d.boardgame_id} item xs={12}>
+          <Avatar variant="rounded" src={d.src} className={classes.large} />
+          <h3>#{i + 1}</h3>
+          <p>Voted by {d.emails.join(", ")}</p>
+        </Grid>
+      ))}
+    </Grid>
+  )
+}
+
 export default props => {
   const classes = useStyles();
   const matches = useMediaQuery(theme => theme.breakpoints.up('md'));
   const date = useSelector(state => state.pricesReducer.date);
   const { loginWithRedirect, logout, isAuthenticated, user } = useLogin();
   const id = useIdRaw();
+  const { results } = props;
 
   return (
     <Grid container className={classes.root} alignContent="center" alignItems="center">
@@ -176,7 +251,7 @@ export default props => {
       <Container maxWidth="lg">
         <Grid container spacing={4} component={MainPaper} className={classes.content}>
           <Grid item md={12} xs={12} component="div">
-            <Content id={id} user={user} />
+            { results ? <Results id={id} /> : <Content id={id} user={user} />}
           </Grid>
         </Grid>
       </Container>
